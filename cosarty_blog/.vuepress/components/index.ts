@@ -1,3 +1,3 @@
-import HelloWord from './HelloWord.vue'
+import About from './About.vue'
 
-export default [HelloWord]
+export default [About]

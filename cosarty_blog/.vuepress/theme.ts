@@ -17,7 +17,9 @@ export default hopeTheme({
 
   // git地址
   repo: 'cosarty',
-  // docsDir: "demo/src",
+  docsBranch: 'master',
+  docsRepo: 'cosarty/cosarty-doc',
+  docsDir: 'cosarty_blog',
   // navbar
   navbar: navbar,
 

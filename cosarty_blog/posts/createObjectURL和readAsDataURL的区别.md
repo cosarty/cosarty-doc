@@ -1,7 +1,6 @@
 ---
 isOriginal: true
-# sidebar: false
-timeline: true
+
 tag: 
   - js
 category: 前端

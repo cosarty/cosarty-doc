@@ -1,15 +1,15 @@
 <template>
   <div>
-    你好
+    关于我....
   </div>
 </template>
 
-
 <script lang="ts">
 export default {
-  name: "HelloWord",
+  name: "About",
 };
 </script>
+
 
 <script setup>
 
@@ -17,6 +17,7 @@ export default {
 
 <style lang="scss" scoped>
 div {
-  color: red
+  color: red;
+  font-size: 30px;
 }
 </style>
