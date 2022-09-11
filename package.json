@@ -1,0 +1,19 @@
+{
+  "name": "cosarty_doc",
+  "version": "2.0.0",
+  "description": "A project of vuepress-theme-hope",
+  "license": "MIT",
+  "scripts": {
+    "docs:build": "vuepress build cosarty_blog",
+    "docs:clean-dev": "vuepress dev cosarty_blog --clean-cache",
+    "docs:dev": "vuepress dev cosarty_blog"
+  },
+  "devDependencies": {
+    "@vuepress/client": "2.0.0-beta.51",
+    "@vuepress/plugin-docsearch": "^2.0.0-alpha.1",
+    "@vuepress/plugin-search": "^2.0.0-beta.51",
+    "vue": "^3.2.27",
+    "vuepress": "2.0.0-beta.51",
+    "vuepress-theme-hope": "2.0.0-beta.97"
+  }
+}
