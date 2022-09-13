@@ -14,6 +14,16 @@ export default navbar([
     ],
   },
   {
+    text: '部署',
+    prefix: '/doc/deploy/',
+    children: [
+      {
+        text: 'nginx',
+        link: 'nginx',
+      },
+    ],
+  },
+  {
     text: '关于',
     icon: 'people',
     link: '/about/',

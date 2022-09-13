@@ -36,7 +36,7 @@ export default hopeTheme({
     'Date',
     'Category',
     'Tag',
-    'ReadingTime',
+    // 'ReadingTime',
     'PageView',
   ],
 
@@ -63,7 +63,7 @@ export default hopeTheme({
     },
     copyCode: {
       showInMobile: true,
-      duration: 0,
+      duration: 1000,
     },
 
     comment: false,
@@ -99,5 +99,6 @@ export default hopeTheme({
         plugins: ['highlight', 'math', 'search', 'notes', 'zoom'],
       },
     },
+    photoSwipe: {},
   },
 })
