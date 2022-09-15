@@ -1,3 +1,7 @@
+---
+sidebar: heading
+---
+
 # Nginx服务器配置
 
 

@@ -8,4 +8,16 @@ export default sidebar({
       link: 'vue3',
     },
   ],
+  '/doc/deploy/': [
+    {
+      text: 'nginx',
+      link: 'nginx',
+    },
+  ],
+  '/doc/essay/': [
+    {
+      text: 'npm发包指南',
+      link: 'npm-publish-guide',
+    },
+  ],
 })

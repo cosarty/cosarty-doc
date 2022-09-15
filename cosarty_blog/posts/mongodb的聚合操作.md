@@ -8,6 +8,7 @@ tag:
   - nosql
 category: 数据库
 # description: fdsfds
+star: 10
 ---
 
 # mongodb 的聚合操作
