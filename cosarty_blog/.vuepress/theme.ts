@@ -65,7 +65,6 @@ export default hopeTheme({
       showInMobile: true,
       duration: 1000,
     },
-
     comment: false,
     // {
 
