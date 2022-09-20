@@ -8,7 +8,7 @@ export default defineUserConfig({
   description: 'cosarty',
   base: '/',
   theme,
-
+  shouldPrefetch: false,
   plugins: [
     docsearchPlugin({
       locales: {

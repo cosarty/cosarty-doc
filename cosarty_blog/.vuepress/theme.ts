@@ -93,10 +93,7 @@ export default hopeTheme({
       favicon: '/favicon.ico',
     },
     mdEnhance: {
-      enableAll: true,
-      presentation: {
-        plugins: ['highlight', 'math', 'search', 'notes', 'zoom'],
-      },
+      lazyLoad: true,
     },
     photoSwipe: {},
   },

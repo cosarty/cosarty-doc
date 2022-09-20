@@ -33,6 +33,7 @@ date: 2022-09-15
 - 2.将代码转化成AST抽象语法树
 - 3.在AST阶段中去处理代码
 - 4.把AST抽象语法树变成浏览器可以识别的代码， 然后输出
+
 ![img](../.vuepress/public/assets/doc/deploy/nginx/aHR0cHM6Ly9tbWJpei5xcGljLmNuL3N6X21tYml6X3BuZy8zR1BUMUNIaWFTVnR5WVppYmpVZ2h4Yzh5VEtoUmliQlZoY0pZQW4zTFJQaWEwMUdGNDJDbFUzUnlNUWQ2ektzZUxKRVRnZ3dhc2VpYlRXQ1FKOVlWMFh2ZmF3LzY0MA.png)
 
 - 当声明一个 script 标签类型为 module 时
