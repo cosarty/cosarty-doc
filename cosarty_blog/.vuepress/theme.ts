@@ -94,6 +94,8 @@ export default hopeTheme({
     },
     mdEnhance: {
       lazyLoad: true,
+      tabs: true,
+      codetabs: true,
     },
     photoSwipe: {},
   },
