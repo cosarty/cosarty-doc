@@ -6,7 +6,8 @@
   "scripts": {
     "docs:build": "vuepress build cosarty_blog",
     "docs:clean-dev": "vuepress dev cosarty_blog --clean-cache",
-    "docs:dev": "vuepress dev cosarty_blog"
+    "docs:dev": "vuepress dev cosarty_blog",
+    "dev": "npm run docs:clean-dev"
   },
   "devDependencies": {
     "@vuepress/client": "2.0.0-beta.51",
