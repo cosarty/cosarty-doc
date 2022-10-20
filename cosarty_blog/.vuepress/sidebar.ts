@@ -1,13 +1,8 @@
 import { sidebar } from 'vuepress-theme-hope'
 
 export default sidebar({
-  '/doc/framework/': [
-    {
-      text: 'vue3',
-      icon: 'generic',
-      link: 'vue3',
-    },
-  ],
+  '/doc/framework/vue': ['vue3'],
+  '/doc/framework/react': ['immer不可变数据'],
   '/doc/deploy/': [
     {
       text: 'nginx',

@@ -8,8 +8,12 @@ export default navbar([
     icon: 'edit',
     children: [
       {
-        text: 'vue3',
-        link: 'vue3',
+        text: 'vue',
+        link: 'vue/vue3',
+      },
+      {
+        text: 'react',
+        link: 'react/immer不可变数据',
       },
     ],
   },
