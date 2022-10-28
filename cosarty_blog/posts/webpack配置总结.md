@@ -22,10 +22,6 @@ webpack-cli 命令
 
 :::
 
-
-
-
-
 安装webpack: 
 
 ::: code-tabs
@@ -44,7 +40,7 @@ npm install webpack webpack-cli -D
 
   :::
 
-运行 `npx webpack` 的时候他默认回去找src下面的index.js文件作为入口文件，我们创建一个**hello.js**然后运行webpack指令`npx webpack`,他会通过入口文件解析依赖给我们打包出一个dist文件夹，这个文件夹就是存放编译之后的js文件的
+运行 `npx webpack` 的时候他默认会去找src下面的index.js文件作为入口文件，我们创建一个**hello.js**然后运行webpack指令`npx webpack`,他会通过入口文件解析依赖给我们打包出一个dist文件夹，这个文件夹就是存放编译之后的js文件的
 
 ![1665134826528](../.vuepress/public/assets/posts/20221006/1665134826528.png)
 
@@ -329,6 +325,27 @@ babel-loader的左右主要是做语法降级，语法兼容人低版本浏览�
 > npm install --save @babel/runtime   [详情](https://www.babeljs.cn/docs/babel-runtime)
 >
 > npm install --save-dev @babel/plugin-transform-runtime
+
+```javascript
+ module: {
+    rules: [
+      {
+        test: /\.js$/,
+        use: {['
+              ']'']
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+            plugins: [['@babel/plugin-transform-runtime']],
+          },
+        },
+        exclude: [/node_modules/],
+      },
+    ],
+  }
+```
+
+
 
 ### 7.代码分离(code-spliting)
 
@@ -731,4 +748,305 @@ css 模块化导入方式
 
 
 ### 9.多页应用
+
+```javascript
+ plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'index.html'),
+      filename: 'a/idnex.html', // 设置输出目录
+      inject: 'body',
+      title: '第一个页面',
+      chunks: ['app'], // 可以设置插件指定的引入chunks
+      publicPath: 'http://www.a.com',
+    }),
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'index2.html'),
+      inject: 'body',
+      title: '我是第二个页面',
+      filename: 'b/idnex2.html',
+      chunks: ['app2'],
+      publicPath: 'http://www.b.com',
+    }),
+  ]
+```
+
+### 10.Tree Shaking
+
+树摇webpack5内置了，但是还是有些缺陷 如果我们引入的第三方库但是并没有去使用他还是会被一起bundle进去
+
+![1666279703335](../.vuepress/public/assets/posts/20221006/1666279703335.png)
+
+这时候就需要我们的另一个配置项：**sideEffect**这个属性让我们告诉打包工具哪些需要模块需要被tree-shaking
+
+> 允许通过配置的方式去标识代码是否有副作用，从而为 Tree Shaking 提供更多的压缩空间。
+
+:::note 注意
+
+package.json和webpack配置文件中的sideEffects虽然同名，但表示的意义不同。
+
+- package.json的sideEffects：标识当前package.json所影响的项目，当中所有的代码是否有副作用
+  - 默认true，表示当前项目中的代码有副作用
+
+- webpack配置文件中的sideEffects：开启功能，是否移除无副作用的代码
+  - 默认false，表示不移除无副作用的模块
+
+- 在production模式下自动开启。
+  - webpack不会识别代码是否有副作用，只会读取package.json的sideEffects字段。
+
+二者需要配合使用，才能处理无副作用的模块。
+
+:::
+
+![1666280189087](../.vuepress/public/assets/posts/20221006/1666280189087.png)
+
+### 11.PWA 渐进式网络应用程序
+
+- pwa主要是通过一个叫做serverWorks的技术实现的
+
+#### 11.1 添加Workbox
+
+添加workbox-webpack-plugin插件，然后调整`webpack.config.js`文件
+
+```bash
+npm i -D workbox-webpack-plugin
+```
+
+```javascript
+  plugins: [
+      ....
+    new WorkboxWebpackPlugin.GenerateSW({
+      clientsClaim: true, // 快速启动serviceWorker
+      skipWaiting: true, // 不遗留任何旧的serviceWorker
+    }),
+     .....
+  ],
+```
+
+![1666280942351](../.vuepress/public/assets/posts/20221006/1666280942351.png)
+
+#### 11.2注册serviceWorker
+
+在你的入口文件注册
+
+```javascript
+if ('serviceWorker' in navigator) {
+	window.addEventListener('load', () => {
+		navigator.serviceWorker.register('/service-worker.js')
+			.then(registration => {
+				console.log('service-worker registed');
+			}).catch(error => {
+				console.log('service-worker register error');
+			})
+	})
+}
+```
+
+### 12.shimming 预置依赖
+
+#### 12.1 shimming 预置全局变量
+
+我们可以把一个第三方的模块依赖改为使用一个全局变量来代替，要实现这些我们需要使用`ProvidePlugin`插件
+
+```javascript
+  plugins: [
+    new webpack.ProvidePlugin({
+      _: 'lodash',
+    }),
+  ],
+```
+
+#### 12.2 细粒度shimming
+
+一些遗留模块的this指向的是window对象
+
+```javascript
+this.alert("hello webpack")
+```
+
+![1666337988291](../.vuepress/public/assets/posts/20221006/1666337988291.png)
+
+当模块运行在CommonJS上下文的时候，这将会变成一个问题，因为此时的this指向的是module.exports，在这种情况下可以使用`imports-loader`覆盖this指向
+
+> npm i -D imports-loader
+
+```javascript
+  module: {
+    rules: [
+      {
+        test: path.resolve('.scr/index.js'),
+        use: 'imports-loader?wrapper=window',
+      },
+    ],
+  }
+```
+
+### 13 Polyfills
+
+安装polyfills
+
+> npm i -D @babel/polyfill
+
+我们更推荐使用 babel-loader下面开启useBuiltIns选项，启动来加载polyfill，babel-preset-env 通过package 里面的browserslist来指定浏览器特性
+
+要使用这个特性我们需要安装一个库来支持
+
+> npm install -D core-js@3
+
+```javascript
+ module: {
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              [
+                '@babel/preset-env',
+                {
+                  targets: ['last 1 version', '> 1%'],
+                  useBuiltIns: 'usage',
+                  corejs: 3,
+                },
+              ],
+            ],
+          },
+        },
+      },
+    ],
+  }
+```
+
+### 14.library
+
+[官网](https://webpack.docschina.org/guides/author-libraries/)
+
+```javascript
+  entry: './src/index.js',
+  output: {
+    filename: 'bundle.js',
+    clean: true,
+    library: {
+      name: 'myLib',
+      type: 'umd',
+    },
+    globalObject: 'globalThis',
+  },
+```
+
+### 15.dll
+
+ ```javascript
+npm i -D add-asset-html-webpack-plugin
+ ```
+
+1.新建一个配置文件webpack.dll.config
+
+```javascript
+const path = require('path')
+const webpack = require('webpack')
+
+module.exports = {
+  mode: 'production',
+  entry: {
+    lodash: ['lodash'],
+  },
+  output: {
+    filename: '[name].js',
+    path: path.resolve(__dirname, 'dll'),
+    library: '[name]_[hash]',
+  },
+  plugins: [
+    new webpack.DllPlugin({
+      name: '[name]_[hash]',
+      path: path.resolve(__dirname, 'dll/manifest.json'),
+    }),
+  ],
+}
+
+```
+
+2.配置webpack.config
+
+```javascript
+const webpack = require('webpack')
+const path = require('path')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const AddAssetHtmlPlugin = require('add-asset-html-webpack-plugin')
+
+module.exports = {
+  entry: './src/app.js',
+  output: {
+    filename: 'bundle.js',
+    clean: true,
+  },
+  mode: 'production',
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: path.join(__dirname, 'index.html'),
+      inject: 'body',
+    }),
+    new webpack.DllReferencePlugin({
+      manifest: path.resolve(__dirname, 'dll/manifest.json'),
+    }),
+    new AddAssetHtmlPlugin({
+      filepath: path.resolve(__dirname, './dll/lodash.js'),
+      publicPath: './',
+    }),
+  ],
+}
+
+```
+
+3.配置package.json
+
+```json
+  "scripts": {
+    "dll": "webpack --config ./webpack.dll.config.js"
+  }
+```
+
+
+
+## 三、提升构建性能
+
+### 通用环境
+
+1 更新到最新版本
+
+2.loader应用于最少数量的必要模块
+
+我们可以使用 include 和exclude 这两个属性
+
+3.尽量少的使用插件
+
+4.减少配置解析选项 relove
+
+5.减少编译的整体大小
+
+我们可以设置splitChunksPlugin，移除未引用的代码
+
+6.持久化缓存
+
+在weipack配置中启动cache选项就好
+
+```javascript
+module.exports = {
+    cache:{
+        type:'memory'
+    }
+}
+
+```
+
+7.自定义plugin和loader
+
+### 开发环境
+
+1.开启webpack --watch
+
+2.开启webpack-dev-server
+
+### 生产环境
 
