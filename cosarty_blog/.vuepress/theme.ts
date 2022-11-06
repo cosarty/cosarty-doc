@@ -89,9 +89,9 @@ export default hopeTheme({
     // provider: "Waline",
     // serverURL: "https://vuepress-theme-hope-comment.vercel.app",
     // },
-    pwa: {
-      favicon: '/favicon.ico',
-    },
+    // pwa: {
+    //   favicon: '/favicon.ico',
+    // },
     mdEnhance: {
       lazyLoad: true,
       tabs: true,
