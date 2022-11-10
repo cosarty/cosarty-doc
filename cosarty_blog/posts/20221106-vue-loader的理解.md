@@ -1,17 +1,18 @@
 ---
 sidebar: false
-description: 
+description: vue-loader的理解
 tag:
   - vue
   - css
-category: vue-loader的理解
-date: 2022-10-28
+category: 前端
+date: 2022-11-06
 ---
 
-# Webpack 案例 —— vue-loader 原理分析
+# vue-loader 原理分析
 
-> **两个问题：**
-> \1. Vue SFC 文件包含多种格式的内容：style、script、template以及自定义block，vue-loader 如何分别处理这些内容？ 2. 针对不同内容块，vue-loader 如何复用其他loader？比如针对 less 定义的style块，vue-loader 是怎么调用 less-loader 加载内容的？
+> **两个问题：** 
+> 1. Vue SFC 文件包含多种格式的内容：style、script、template以及自定义block，vue-loader 如何分别处理这些内容？
+> 2. 针对不同内容块，vue-loader 如何复用其他loader？比如针对 less 定义的style块，vue-loader 是怎么调用 less-loader 加载内容的？
 
 OK，如果你不是特别清楚，那接着往下看吧，下面我们会拆开vue-loader的代码，看看SFC内容具体是怎么流转转换，顺便还能学学 webpack loader 的编写套路。
 
@@ -104,7 +105,7 @@ module.exports = VueLoaderPlugin
 
 这种动态注入的好处是用户不用关注 —— 不去看源码根本不知道还有一个pitcher loader，而且能保证pitcher能在其他rule之前执行，确保运行顺序。
 
-\2. 复制rules列表
+2. 复制rules列表
 
 如代码第8行，plugin 中遍历 compiler.options.module.rules 数组，也就是用户提供的webpack配置中的 module.rules 项，对每个rule执行 cloneRule 方法复制规则对象。之后，将webpack 配置修改为 [pitcher, ...clonedRules, ...rules] 。
 
@@ -221,7 +222,7 @@ module.exports = {
 可以看到，第2、3项是从开发者提供的配置中复制过来的，内容相似，只是 cloneRule 在复制过程会给这些规则重新定义 resourceQuery 函数：
 
 ```js
-unction cloneRule (rawRule, refs) {
+function cloneRule (rawRule, refs) {
     const rules = ruleSetCompiler.compileRules(`clonedRuleSet-${++uid}`, [{
       rules: [rawRule]
     }], refs)
@@ -265,7 +266,7 @@ unction cloneRule (rawRule, refs) {
   }
 ```
 
-cloneRule 内部定义的 resourceQuery 函数对应 **module.rules.resourceQuery**[https://webpack.js.org/configuration/module/#ruleresourcequery](https://link.zhihu.com/?target=https%3A//webpack.js.org/configuration/module/%23ruleresourcequery)配置项，与我们经常用的 test 差不多，都用于判断资源路径是否适用这个rule。这里 resourceQuery 核心逻辑就是取出路径中的lang参数，伪造一个以 lang 结尾的路径，传入rule的condition中测试路径名对该rule是否生效，例如下面这种会命中 /.js$/i 规则：
+cloneRule内部定义的resourceQuery函数对应 **module.rules.resourceQuery** [https://webpack.js.org/configuration/module/#ruleresourcequery](https://link.zhihu.com/?target=https%3A//webpack.js.org/configuration/module/%23ruleresourcequery) 配置项，与我们经常用的 test 差不多，都用于判断资源路径是否适用这个rule。这里 resourceQuery 核心逻辑就是取出路径中的lang参数，伪造一个以 lang 结尾的路径，传入rule的condition中测试路径名对该rule是否生效，例如下面这种会命中 /.js$/i 规则：
 
 ```js
 import script from "./index.vue?vue&type=script&lang=js&"
@@ -378,7 +379,7 @@ export default component.exports
 
 这些路径都对应原始的 .vue 路径基础上增加了 vue 标志符及 type、lang 等参数。
 
-\2. 执行pitcher
+2. 执行pitcher
 
 如前所述，vue-loader 插件会在预处理阶段插入带 resourceQuery 函数的 pitcher 对象：
 
@@ -481,7 +482,7 @@ import script from "./index.vue?vue&type=script&lang=js&"
 import mod from "-!../../node_modules/babel-loader/lib/index.js??clonedRuleSet-2[0].rules[0].use!../../node_modules/vue-loader/lib/index.js??vue-loader-options!./index.vue?vue&type=script&lang=js&";
 ```
 
-\3. 第二次执行vue-loader
+3. 第二次执行vue-loader
 
 通过上面 vue-loader -> pitcher 处理后，会得到一个新的行内路径，例如：
 
@@ -609,7 +610,7 @@ OK，到这里我们可以解答文章最开始提到的问题：
 
 > 在vue-loader中，给原始文件路径增加不同的参数，后续配合 resourceQuery 函数就可以分开处理这些内容，这样的实现相比于一次性处理，逻辑更清晰简洁，更容易理解
 
-\2. 针对不同内容块，vue-loader 如何复用其他loader？比如针对 less 定义的style块，vue-loader 是怎么调用 less-loader 加载内容的？
+2. 针对不同内容块，vue-loader 如何复用其他loader？比如针对 less 定义的style块，vue-loader 是怎么调用 less-loader 加载内容的？
 
 > 经过 normal loader、pitcher loader 两个阶段后，SFC 内容会被转化为 import xxx from '!-babel-loader!vue-loader?xxx' 格式的引用路径，以此复用用户配置。
 

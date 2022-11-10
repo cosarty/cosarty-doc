@@ -35,6 +35,10 @@ export default navbar([
         text: 'npm发包指南',
         link: 'npm-publish-guide',
       },
+      {
+        text: '杂七杂八',
+        link: 'mixed/mobile',
+      },
     ],
   },
   {

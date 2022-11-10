@@ -96,6 +96,7 @@ export default hopeTheme({
       lazyLoad: true,
       tabs: true,
       codetabs: true,
+      demo: true
     },
     photoSwipe: {},
   },

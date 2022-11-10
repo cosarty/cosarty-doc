@@ -9,10 +9,7 @@ export default sidebar({
       link: 'nginx',
     },
   ],
-  '/doc/essay/': [
-    {
-      text: 'npm发包指南',
-      link: 'npm-publish-guide',
-    },
-  ],
+
+  '/doc/essay/npm-publish-guide':'structure',
+  '/doc/essay/mixed': ['mobile'],
 })
