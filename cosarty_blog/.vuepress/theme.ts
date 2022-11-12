@@ -27,7 +27,7 @@ export default hopeTheme({
   sidebar: sidebar,
   fullscreen: true,
   // footer: "默认页脚",
-  darkmode: 'toggle',
+  darkmode: 'auto',
   displayFooter: true,
 
   pageInfo: [
@@ -65,30 +65,14 @@ export default hopeTheme({
       showInMobile: true,
       duration: 1000,
     },
-    comment: false,
-    // {
+    comment: {
+      provider: 'Giscus',
+      repo: 'cosarty/cosarty-doc',
+      repoId: 'R_kgDOH-iC9w',
+      category: 'Announcements',
+      categoryId: 'DIC_kwDOH-iC984CShBG',
+    },
 
-    /**
-     * Using Giscus
-     */
-    // provider: "Giscus",
-    // repo: "vuepress-theme-hope/giscus-discussions",
-    // repoId: "R_kgDOG_Pt2A",
-    // category: "Announcements",
-    // categoryId: "DIC_kwDOG_Pt2M4COD69",
-
-    /**
-     * Using Twikoo
-     */
-    // provider: "Twikoo",
-    // envId: "https://twikoo.ccknbc.vercel.app",
-
-    /**
-     * Using Waline
-     */
-    // provider: "Waline",
-    // serverURL: "https://vuepress-theme-hope-comment.vercel.app",
-    // },
     // pwa: {
     //   favicon: '/favicon.ico',
     // },
@@ -96,7 +80,7 @@ export default hopeTheme({
       lazyLoad: true,
       tabs: true,
       codetabs: true,
-      demo: true
+      demo: true,
     },
     photoSwipe: {},
   },
