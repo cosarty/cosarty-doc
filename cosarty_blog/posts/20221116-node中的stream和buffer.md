@@ -7,11 +7,13 @@ category: node
 date: 2022-11-16
 ---
 
+# node 中的 stream 和 buffer
+
 ## 流的概念
 
 > - 流是一组有序的，有起点和终点的字节数据传输手段
 > - 它不关心文件的整体内容，只关注是否从文件中读到了数据，以及读到数据之后的处理
-> - 流是一个抽象接口，被 Node 中的很多对象所实现。比如HTTP 服务器request和response对象都是流。
+> - 流是一个抽象接口，被 Node 中的很多对象所实现。比如 HTTP 服务器 request 和 response 对象都是流。
 
 ### Node.js 中有四种基本的流类型
 
@@ -22,34 +24,26 @@ date: 2022-11-16
 
 ### 为什么使用流
 
-如果读取一个文件，使用fs.readFileSync同步读取，程序会被阻塞，然后所有数据被写到内存中。使用fs.readFile读取，程序不会阻塞，但是所有数据依旧会一次性全被写到内存，然后再让消费者去读取。如果文件很大，内存使用便会成为问题。 这种情况下流就比较有优势。流相比一次性写到内存中，它会先写到到一个缓冲区，然后再由消费者去读取，不用将整个文件写进内存，节省了内存空间。
+如果读取一个文件，使用 fs.readFileSync 同步读取，程序会被阻塞，然后所有数据被写到内存中。使用 fs.readFile 读取，程序不会阻塞，但是所有数据依旧会一次性全被写到内存，然后再让消费者去读取。如果文件很大，内存使用便会成为问题。 这种情况下流就比较有优势。流相比一次性写到内存中，它会先写到到一个缓冲区，然后再由消费者去读取，不用将整个文件写进内存，节省了内存空间。
 
 ### 视频播放例子
 
-小伙伴们肯定都在线看过电影，对比定义中的图-`水桶管道流转图`，`source`就是服务器端的视频，`dest`就是你自己的播放器(或者浏览器中的flash和h5 video)。大家想一下，看电影的方式就如同上面的图管道换水一样，一点点从服务端将视频流动到本地播放器，一边流动一边播放，最后流动完了也就播放完了。
+小伙伴们肯定都在线看过电影，对比定义中的图-`水桶管道流转图`，`source`就是服务器端的视频，`dest`就是你自己的播放器(或者浏览器中的 flash 和 h5 video)。大家想一下，看电影的方式就如同上面的图管道换水一样，一点点从服务端将视频流动到本地播放器，一边流动一边播放，最后流动完了也就播放完了。
 
 说明：视频播放的这个例子，如果我们不使用管道和流动的方式，直接先从服务端加载完视频文件，然后再播放。会造成很多问题
 
 1. 因内存占有太多而导致系统卡顿或者崩溃
-2. 因为我们的网速 内存 cpu运算速度都是有限的，而且还要有多个程序共享使用，一个视频文件加载完可能有几个g那么大。
+2. 因为我们的网速 内存 cpu 运算速度都是有限的，而且还要有多个程序共享使用，一个视频文件加载完可能有几个 g 那么大。
 
 1.不使用流时文件会全部写入内存，再又内存写入目标文件
 
+![img](../.vuepress/public/assets/posts/20221116/163b444a770a9b67_tplv-t2oaga2asx-zoom-in-crop-mark_3024_0_0_0.jpg)
 
+2.使用流时可以控制流的读取及写入速率
 
-![img](../.vuepress/public/assets/posts/20221116/163b444a770a9b67_tplv-t2oaga2asx-zoom-in-crop-mark_3024_0_0_0.awebp)
+![img](../.vuepress/public/assets/posts/20221116/163b44bf434269d8_tplv-t2oaga2asx-zoom-in-crop-mark_3024_0_0_0.jpg)
 
- 2.使用流时可以控制流的读取及写入速率
-
-
-
-
-
-![img](../.vuepress/public/assets/posts/20221116/163b44bf434269d8_tplv-t2oaga2asx-zoom-in-crop-mark_3024_0_0_0.awebp)
-
-
-
-### stream从哪里来-soucre
+### stream 从哪里来-soucre
 
 `stream`的常见来源方式有三种：
 
@@ -57,7 +51,7 @@ date: 2022-11-16
 2. `http`请求中的`request`
 3. 读取文件
 
-这里先说一下`从控制台输入`这种方式，2和3两种方式`stream应用场景`章节会有详细的讲解。
+这里先说一下`从控制台输入`这种方式，2 和 3 两种方式`stream应用场景`章节会有详细的讲解。
 
 看一段`process.stdin`的代码
 
@@ -71,121 +65,119 @@ stream by stdin <Buffer 6b 6f 61 6c 61 6b 6f 61 6c 61 0a>
 stream by stdin koalakoala
 ```
 
-运行上面代码：然后从控制台输入任何内容都会被`data` 事件监听到，`process.stdin`就是一个`stream`对象,data 是`stream`对象用来监听数据传入的一个自定义函数，通过输出结果可看出`process.stdin`是一个stream对象。
+运行上面代码：然后从控制台输入任何内容都会被`data` 事件监听到，`process.stdin`就是一个`stream`对象,data 是`stream`对象用来监听数据传入的一个自定义函数，通过输出结果可看出`process.stdin`是一个 stream 对象。
 
 说明： `stream`对象可以监听`"data"`,`"end"`,`"opne"`,`"close"`,`"error"`等事件。`node.js`中监听自定义事件使用`.on`方法，例如`process.stdin.on(‘data’,…)`, `req.on(‘data’,…)`,通过这种方式，能很直观的监听到`stream`数据的传入和结束
 
 ### 连接水桶的管道-pipe
 
-从水桶管道流转图中可以看到，在`source`和`dest`之间有一个连接的管道`pipe`,它的基本语法是`source.pipe(dest)`，`source`和`dest`就是通过pipe连接，让数据从`source`流向了`dest`。
+从水桶管道流转图中可以看到，在`source`和`dest`之间有一个连接的管道`pipe`,它的基本语法是`source.pipe(dest)`，`source`和`dest`就是通过 pipe 连接，让数据从`source`流向了`dest`。
 
-### stream到哪里去-dest
+### stream 到哪里去-dest
 
-stream的常见输出方式有三种：
+stream 的常见输出方式有三种：
 
 1. 输出控制台
 2. `http`请求中的`response`
 3. 写入文件
 
-## stream应用场景
+## stream 应用场景
 
-### get请求中应用stream
+### get 请求中应用 stream
 
 这样一个需求：
 
-使用node.js实现一个http请求，读取data.txt文件，创建一个服务，监听8000端口，读取文件后返回给客户端，讲get请求的时候用一个常规文件读取与其做对比，请看下面的例子。
+使用 node.js 实现一个 http 请求，读取 data.txt 文件，创建一个服务，监听 8000 端口，读取文件后返回给客户端，讲 get 请求的时候用一个常规文件读取与其做对比，请看下面的例子。
 
-- 常规使用文件读取返回给客户端response例子 ，文件命名为`getTest1.js`
+- 常规使用文件读取返回给客户端 response 例子 ，文件命名为`getTest1.js`
 
 ```javascript
 // getTest.js
-const http = require('http');
-const fs = require('fs');
-const path = require('path');
+const http = require('http')
+const fs = require('fs')
+const path = require('path')
 
 const server = http.createServer(function (req, res) {
-    const method = req.method; // 获取请求方法
-    if (method === 'GET') { // get 请求方法判断
-        const fileName = path.resolve(__dirname, 'data.txt');
-        fs.readFile(fileName, function (err, data) {
-            res.end(data);
-        });
-    }
-});
-server.listen(8000);
+  const method = req.method // 获取请求方法
+  if (method === 'GET') {
+    // get 请求方法判断
+    const fileName = path.resolve(__dirname, 'data.txt')
+    fs.readFile(fileName, function (err, data) {
+      res.end(data)
+    })
+  }
+})
+server.listen(8000)
 ```
 
-- 使用stream返回给客户端response 将上面代码做部分修改，文件命名为`getTest2.js`
+- 使用 stream 返回给客户端 response 将上面代码做部分修改，文件命名为`getTest2.js`
 
 ```javascript
 // getTest2.js
 // 主要展示改动的部分
 const server = http.createServer(function (req, res) {
-    const method = req.method; // 获取请求方法
-    if (method === 'GET') { // get 请求
-        const fileName = path.resolve(__dirname, 'data.txt');
-        let stream = fs.createReadStream(fileName);
-        stream.pipe(res); // 将 res 作为 stream 的 dest
-    }
-});
-server.listen(8000);
+  const method = req.method // 获取请求方法
+  if (method === 'GET') {
+    // get 请求
+    const fileName = path.resolve(__dirname, 'data.txt')
+    let stream = fs.createReadStream(fileName)
+    stream.pipe(res) // 将 res 作为 stream 的 dest
+  }
+})
+server.listen(8000)
 ```
 
-对于下面get请求中使用stream的例子，会不会有些小伙伴提出质疑，难道response也是一个stream对象，是的没错,对于那张`水桶管道流转图`,response就是一个dest。
+对于下面 get 请求中使用 stream 的例子，会不会有些小伙伴提出质疑，难道 response 也是一个 stream 对象，是的没错,对于那张`水桶管道流转图`,response 就是一个 dest。
 
-虽然get请求中可以使用stream，但是相比直接file文件读取`·res.end(data)`有什么好处呢？这时候我们刚才推荐的压力测试小工具就用到了。`getTest1`和`getTest2`两段代码，将`data.txt`内容增加大一些，使用`ab`工具进行测试，运行命令`ab -n 100 -c 100 http://localhost:8000/`，其中`-n 100`表示先后发送100次请求，`-c 100`表示一次性发送的请求数目为100个。对比结果分析使用stream后，有非常大的性能提升，小伙伴们可以自己实际操作看一下。
+虽然 get 请求中可以使用 stream，但是相比直接 file 文件读取`·res.end(data)`有什么好处呢？这时候我们刚才推荐的压力测试小工具就用到了。`getTest1`和`getTest2`两段代码，将`data.txt`内容增加大一些，使用`ab`工具进行测试，运行命令`ab -n 100 -c 100 http://localhost:8000/`，其中`-n 100`表示先后发送 100 次请求，`-c 100`表示一次性发送的请求数目为 100 个。对比结果分析使用 stream 后，有非常大的性能提升，小伙伴们可以自己实际操作看一下。
 
-### post中使用stream
+### post 中使用 stream
 
-一个通过post请求微信小程序的地址生成二维码的需求。
+一个通过 post 请求微信小程序的地址生成二维码的需求。
 
 ```javascript
 /*
-* 微信生成二维码接口
-* params src 微信url / 其他图片请求链接
-* params localFilePath: 本地路径
-* params data: 微信请求参数
-* */
-const downloadFile=async (src, localFilePath, data)=> {
-    try{
-        const ws = fs.createWriteStream(localFilePath);
-        return new Promise((resolve, reject) => {
-            ws.on('finish', () => {
-                resolve(localFilePath);
-            });
-            if (data) {
-                request({
-                    method: 'POST',
-                    uri: src,
-                    json: true,
-                    body: data
-                }).pipe(ws);
-            } else {
-                request(src).pipe(ws);
-            }
-        });
-    }catch (e){
-        logger.error('wxdownloadFile error: ',e);
-        throw e;
-    }
+ * 微信生成二维码接口
+ * params src 微信url / 其他图片请求链接
+ * params localFilePath: 本地路径
+ * params data: 微信请求参数
+ * */
+const downloadFile = async (src, localFilePath, data) => {
+  try {
+    const ws = fs.createWriteStream(localFilePath)
+    return new Promise((resolve, reject) => {
+      ws.on('finish', () => {
+        resolve(localFilePath)
+      })
+      if (data) {
+        request({
+          method: 'POST',
+          uri: src,
+          json: true,
+          body: data,
+        }).pipe(ws)
+      } else {
+        request(src).pipe(ws)
+      }
+    })
+  } catch (e) {
+    logger.error('wxdownloadFile error: ', e)
+    throw e
+  }
 }
 ```
 
-看这段使用了stream的代码，为本地文件对应的路径创建一个stream对象，然后直接`.pipe(ws)`,将post请求的数据流转到这个本地文件中，这种stream的应用在node后端开发过程中还是比较常用的。
+看这段使用了 stream 的代码，为本地文件对应的路径创建一个 stream 对象，然后直接`.pipe(ws)`,将 post 请求的数据流转到这个本地文件中，这种 stream 的应用在 node 后端开发过程中还是比较常用的。
 
-### post与get使用stream总结
+### post 与 get 使用 stream 总结
 
-request和reponse一样，都是stream对象，可以使用stream的特性，二者的区别在于，我们再看一下`水桶管道流转图`，
+request 和 reponse 一样，都是 stream 对象，可以使用 stream 的特性，二者的区别在于，我们再看一下`水桶管道流转图`，
 
+![img](../.vuepress/public/assets/posts/20221116/16bdc4cdc5cdccc4_tplv-t2oaga2asx-zoom-in-crop-mark_4536_0_0_0.jpg)
 
+request 是 source 类型，是图中的源头，而 response 是 dest 类型，是图中的目的地。
 
-![img](../.vuepress/public/assets/posts/20221116/16bdc4cdc5cdccc4_tplv-t2oaga2asx-zoom-in-crop-mark_4536_0_0_0.image)
-
- request是source类型，是图中的源头，而response是dest类型，是图中的目的地。
-
-
-
-### 在文件操作中使用stream
+### 在文件操作中使用 stream
 
 一个文件拷贝的例子
 
@@ -204,11 +196,11 @@ const writeStream = fs.createWriteStream(fileName2)
 readStream.pipe(writeStream)
 // 数据读取完成监听，即拷贝完成
 readStream.on('end', function () {
-    console.log('拷贝完成')
+  console.log('拷贝完成')
 })
 ```
 
-看了这段代码，发现是不是拷贝好像很简单，创建一个可读数据流`readStream`，一个可写数据流`writeStream`,然后直接通过`pipe`管道把数据流转过去。这种使用stream的拷贝相比存文件的读写实现拷贝，性能要增加很多，所以小伙伴们在遇到文件操作的需求的时候，尽量先评估一下是否需要使用`stream`实现。
+看了这段代码，发现是不是拷贝好像很简单，创建一个可读数据流`readStream`，一个可写数据流`writeStream`,然后直接通过`pipe`管道把数据流转过去。这种使用 stream 的拷贝相比存文件的读写实现拷贝，性能要增加很多，所以小伙伴们在遇到文件操作的需求的时候，尽量先评估一下是否需要使用`stream`实现。
 
 ### 逐行读取的最佳方案 readline
 
@@ -230,17 +222,17 @@ var readStream = fs.createReadStream(fileName)
 
 // 创建 readline 对象
 var rl = readline.createInterface({
-    // 输入，依赖于 stream 对象
-    input: readStream
+  // 输入，依赖于 stream 对象
+  input: readStream,
 })
 
 // 监听逐行读取的内容
 rl.on('line', function (lineData) {
-    console.log(lineData)
+  console.log(lineData)
 })
 // 监听读取完成
 rl.on('close', function () {
-    console.log('readline end')
+  console.log('readline end')
 })
 ```
 
@@ -257,48 +249,51 @@ var memeye = require('memeye')
 memeye()
 
 function doReadLine() {
-    var fileName = path.resolve(__dirname, 'readline-data.txt')
-    var readStream = fs.createReadStream(fileName)
-    var rl = readline.createInterface({
-        input: readStream
-    })
-    var num = 0
+  var fileName = path.resolve(__dirname, 'readline-data.txt')
+  var readStream = fs.createReadStream(fileName)
+  var rl = readline.createInterface({
+    input: readStream,
+  })
+  var num = 0
 
-    // 监听逐行读取的内容
-    rl.on('line', function (lineData) {
-        if (lineData.indexOf('2018-10-30 14:00') >= 0 && lineData.indexOf('user.html') >= 0) {
-            num++
-        }
-    })
-    // 监听读取完成
-    rl.on('close', function () {
-        console.log('num', num)
-    })
+  // 监听逐行读取的内容
+  rl.on('line', function (lineData) {
+    if (
+      lineData.indexOf('2018-10-30 14:00') >= 0 &&
+      lineData.indexOf('user.html') >= 0
+    ) {
+      num++
+    }
+  })
+  // 监听读取完成
+  rl.on('close', function () {
+    console.log('num', num)
+  })
 }
 
-setTimeout(doReadLine, 5000);
+setTimeout(doReadLine, 5000)
 ```
 
 ### 前端一些打包工具的底层实现
 
 目前一些比较火的`前端打包构建工具`，都是通过`node.js`编写的，打包和构建的过程肯定是文件频繁操作的过程，离不来`stream`,例如现在比较火的`gulp`,有兴趣的小伙伴可以去看一下源码。
 
-## stream的种类
+## stream 的种类
 
 - `Readable Stream` 可读数据流
 - `Writeable Stream` 可写数据流
 - `Duplex Stream` 双向数据流，可以同时读和写
 - `Transform Stream` 转换数据流，可读可写，同时可以转换（处理）数据(不常用)
 
-之前的文章都是围绕前两种可读数据流和可写数据流，第四种流不太常用，需要的小伙伴网上搜索一下，接下来对第三种数据流Duplex Stream 说明一下。
+之前的文章都是围绕前两种可读数据流和可写数据流，第四种流不太常用，需要的小伙伴网上搜索一下，接下来对第三种数据流 Duplex Stream 说明一下。
 
 `Duplex Stream` 双向的，既可读，又可写。 `Duplex streams`同时实现了 `Readable`和`Writable` 接口。 `Duplex streams`的例子包括
 
 - `tcp sockets`
 - `zlib streams`
-- `crypto streams` 我在项目中还未使用过双工流，一些Duplex Stream的内容可以参考这篇文章[NodeJS Stream 双工流](https://link.juejin.cn?target=https%3A%2F%2Fwww.cnblogs.com%2FdolphinX%2Fp%2F6376615.html)
+- `crypto streams` 我在项目中还未使用过双工流，一些 Duplex Stream 的内容可以参考这篇文章[NodeJS Stream 双工流](https://link.juejin.cn?target=https%3A%2F%2Fwww.cnblogs.com%2FdolphinX%2Fp%2F6376615.html)
 
-## stream有什么弊端
+## stream 有什么弊端
 
 - 用 `rs.pipe(ws)` 的方式来写文件并不是把 rs 的内容 `append` 到 ws 后面，而是直接用 rs 的内容覆盖 ws 原有的内容
 - 已结束/关闭的流不能重复使用，必须重新创建数据流
@@ -306,73 +301,73 @@ setTimeout(doReadLine, 5000);
 - 如果你要监听多个数据流，同时你又使用了 `pipe` 方法来串联数据流的话，你就要写成： 代码实例：
 
 ```javascript
- data
-        .on('end', function() {
-            console.log('data end');
-        })
-        .pipe(a)
-        .on('end', function() {
-            console.log('a end');
-        })
-        .pipe(b)
-        .on('end', function() {
-            console.log('b end');
-        });
+data
+  .on('end', function () {
+    console.log('data end')
+  })
+  .pipe(a)
+  .on('end', function () {
+    console.log('a end')
+  })
+  .pipe(b)
+  .on('end', function () {
+    console.log('b end')
+  })
 ```
 
 ## 流的使用及实现
 
-### 可读流createReadStream
+### 可读流 createReadStream
 
 #### 可读流的使用
 
 1. 创建可读流
 
    ```javascript
-   var rs = fs.createReadStream(path,[options]);
+   var rs = fs.createReadStream(path, [options])
    ```
 
-   1.)path读取文件的路径
+   1.)path 读取文件的路径
 
    2.)options
 
-   - flags打开文件要做的操作,默认为'r'
-   - encoding默认为null
-   - start开始读取的索引位置
-   - end结束读取的索引位置(包括结束位置)
-   - highWaterMark读取缓存区默认的大小64kb
+   - flags 打开文件要做的操作,默认为'r'
+   - encoding 默认为 null
+   - start 开始读取的索引位置
+   - end 结束读取的索引位置(包括结束位置)
+   - highWaterMark 读取缓存区默认的大小 64kb
 
-   > 如果指定utf8编码highWaterMark要大于3个字节
+   > 如果指定 utf8 编码 highWaterMark 要大于 3 个字节
 
-2. 监听data事件
+2. 监听 data 事件
 
    流切换到流动模式,数据会被尽可能快的读出
 
    ```javascript
    rs.on('data', function (data) {
-       console.log(data);
-   });
+     console.log(data)
+   })
    ```
 
-3. 监听end事件
+3. 监听 end 事件
 
    该事件会在读完数据后被触发
 
    ```javascript
    rs.on('end', function () {
-       console.log('读取完成');
-   });
+     console.log('读取完成')
+   })
    ```
 
-4. 监听error事件
+4. 监听 error 事件
 
    ```javascript
    rs.on('error', function (err) {
-       console.log(err);
-   });
+     console.log(err)
+   })
    ```
 
-5. 监听close事件
+5. 监听 close 事件
 
    与指定{encoding:'utf8'}效果相同，设置编码
 
@@ -380,18 +375,18 @@ setTimeout(doReadLine, 5000);
    rs.setEncoding('utf8');
    ```
 
-6. 暂停和恢复触发data
+6. 暂停和恢复触发 data
 
-   通过pause()方法和resume()方法
+   通过 pause()方法和 resume()方法
 
    ```javascript
    rs.on('data', function (data) {
-       rs.pause();
-       console.log(data);
-   });
+     rs.pause()
+     console.log(data)
+   })
    setTimeout(function () {
-       rs.resume();
-   },2000);
+     rs.resume()
+   }, 2000)
    ```
 
 #### 可读流的简单实现
@@ -407,17 +402,17 @@ setTimeout(doReadLine, 5000);
        this.path = path;
        this.highWaterMark = options.highWaterMark || 64 * 1024;
        this.autoClose = options.autoClose || true;
-       this.start = options.start || 0; 
+       this.start = options.start || 0;
        this.pos = this.start; // pos会随着读取的位置改变
        this.end = options.end || null; // null表示没传递
        this.encoding = options.encoding || null;
        this.flags = options.flags || 'r';
-   
+
        // 参数的问题
        this.flowing = null; // 非流动模式
        // 弄一个buffer读出来的数
        this.buffer = Buffer.alloc(this.highWaterMark);
-       this.open(); 
+       this.open();
        // {newListener:[fn]}
        // 次方法默认同步调用的
        this.on('newListener', (type) => { // 等待着 它监听data事件
@@ -488,38 +483,40 @@ setTimeout(doReadLine, 5000);
 2. 验证
 
    ```javascript
-   let ReadStream = require('./ReadStream');
+   let ReadStream = require('./ReadStream')
    let rs = new ReadStream('./2.txt', {
      highWaterMark: 3, // 字节
-     flags:'r',
-     autoClose:true, // 默认读取完毕后自动关闭
-     start:0,
+     flags: 'r',
+     autoClose: true, // 默认读取完毕后自动关闭
+     start: 0,
      //end:3,// 流是闭合区间 包start也包end
-     encoding:'utf8'
-   });
+     encoding: 'utf8',
+   })
    // 默认创建一个流 是非流动模式，默认不会读取数据
    // 我们需要接收数据 我们要监听data事件，数据会总动的流出来
-   rs.on('error',function (err) {
+   rs.on('error', function (err) {
      console.log(err)
-   });
-   rs.on('open',function () {
-     console.log('文件打开了');
-   });
+   })
+   rs.on('open', function () {
+     console.log('文件打开了')
+   })
    // 内部会自动的触发这个事件 rs.emit('data');
-   rs.on('data',function (data) {
-     console.log(data);
-     rs.pause(); // 暂停触发on('data')事件，将流动模式又转化成了非流动模式
-   });
-   setTimeout(()=>{rs.resume()},5000)
-   rs.on('end',function () {
-     console.log('读取完毕了');
-   });
-   rs.on('close',function () {
+   rs.on('data', function (data) {
+     console.log(data)
+     rs.pause() // 暂停触发on('data')事件，将流动模式又转化成了非流动模式
+   })
+   setTimeout(() => {
+     rs.resume()
+   }, 5000)
+   rs.on('end', function () {
+     console.log('读取完毕了')
+   })
+   rs.on('close', function () {
      console.log('关闭')
-   });
+   })
    ```
 
-### 可写流createWriteStream
+### 可写流 createWriteStream
 
 #### 可写流的使用
 
@@ -529,77 +526,77 @@ setTimeout(doReadLine, 5000);
    var ws = fs.createWriteStream(path,[options]);
    ```
 
-   1.)path写入的文件路径
+   1.)path 写入的文件路径
 
    2.)options
 
-   - flags打开文件要做的操作,默认为'w'
-   - encoding默认为utf8
-   - highWaterMark写入缓存区的默认大小16kb
+   - flags 打开文件要做的操作,默认为'w'
+   - encoding 默认为 utf8
+   - highWaterMark 写入缓存区的默认大小 16kb
 
-2. write方法
+2. write 方法
 
    ```javascript
-   ws.write(chunk,[encoding],[callback]);
+   ws.write(chunk, [encoding], [callback])
    ```
 
-   1.)chunk写入的数据buffer/string
+   1.)chunk 写入的数据 buffer/string
 
-   2.)encoding编码格式chunk为字符串时有用，可选
+   2.)encoding 编码格式 chunk 为字符串时有用，可选
 
    3.)callback 写入成功后的回调
 
-   > 返回值为布尔值，系统缓存区满时为false,未满时为true
+   > 返回值为布尔值，系统缓存区满时为 false,未满时为 true
 
-3. end方法
+3. end 方法
 
-   ```javascript 
-   ws.end(chunk,[encoding],[callback]);
+   ```javascript
+   ws.end(chunk, [encoding], [callback])
    ```
 
    > 表明接下来没有数据要被写入 Writable 通过传入可选的 chunk 和 encoding 参数，可以在关闭流之前再写入一段数据 如果传入了可选的 callback 函数，它将作为 'finish' 事件的回调函数
 
-4. drain方法
+4. drain 方法
 
    - 当一个流不处在 drain 的状态， 对 write() 的调用会缓存数据块， 并且返回 false。 一旦所有当前所有缓存的数据块都排空了（被操作系统接受来进行输出）， 那么 'drain' 事件就会被触发
    - 建议， 一旦 write() 返回 false， 在 'drain' 事件触发前， 不能写入任何数据块
 
    ```javascript
-   let fs = require('fs');
-   let ws = fs.createWriteStream('./2.txt',{
-     flags:'w',
-     encoding:'utf8',
-     highWaterMark:3
-   });
-   let i = 10;
-   function write(){
-    let  flag = true;
-    while(i&&flag){
-         flag = ws.write("1");
-         i--;
-        console.log(flag);
-    }
+   let fs = require('fs')
+   let ws = fs.createWriteStream('./2.txt', {
+     flags: 'w',
+     encoding: 'utf8',
+     highWaterMark: 3,
+   })
+   let i = 10
+   function write() {
+     let flag = true
+     while (i && flag) {
+       flag = ws.write('1')
+       i--
+       console.log(flag)
+     }
    }
-   write();
-   ws.on('drain',()=>{
-     console.log("drain");
-     write();
-   });
+   write()
+   ws.on('drain', () => {
+     console.log('drain')
+     write()
+   })
    ```
 
-5. finish方法
+5. finish 方法
 
    在调用了 stream.end() 方法，且缓冲区数据都已经传给底层系统之后， 'finish' 事件将被触发
 
    ```javascript
-   var writer = fs.createWriteStream('./2.txt');
+   var writer = fs.createWriteStream('./2.txt')
    for (let i = 0; i < 100; i++) {
-     writer.write(`hello, ${i}!\n`);
+     writer.write(`hello, ${i}!\n`)
    }
-   writer.end('结束\n');
+   writer.end('结束\n')
    writer.on('finish', () => {
-     console.error('所有的写入已经完成!');
-   });
+     console.error('所有的写入已经完成!')
+   })
    ```
 
 #### 可写流的简单实现
@@ -621,7 +618,7 @@ setTimeout(doReadLine, 5000);
        this.autoClose = options.autoClose || true;
        this.highWaterMark = options.highWaterMark || 16 * 1024;
        this.open(); // fd 异步的  触发一个open事件当触发open事件后fd肯定就存在了
-   
+
        // 写文件的时候 需要的参数有哪些
        // 第一次写入是真的往文件里写
        this.writing = false; // 默认第一次就不是正在写入
@@ -710,43 +707,43 @@ setTimeout(doReadLine, 5000);
      start: 0,
      autoClose: true, // 自动关闭
      mode: 0o666, // 可读可写
-   });
+   })
    // drain的触发时机，只有当highWaterMark填满时，才可能触发drain
    // 当嘴里的和地下的都吃完了，就会触发drain方法
-   let i = 9;
+   let i = 9
    function write() {
-     let flag = true;
+     let flag = true
      while (flag && i >= 0) {
-       i--;
-       flag = ws.write('111'); // 987 // 654 // 321 // 0
+       i--
+       flag = ws.write('111') // 987 // 654 // 321 // 0
        console.log(flag)
      }
    }
-   write();
+   write()
    ws.on('drain', function () {
-     console.log('干了');
-     write();
-   });
+     console.log('干了')
+     write()
+   })
    ```
 
-### pipe方法
+### pipe 方法
 
-pipe方法是管道的意思，可以控制速率
+pipe 方法是管道的意思，可以控制速率
 
-- 会监听rs的on('data'),将读取到的内容调用ws.write方法
-- 调用写的方法会返回一个boolean类型
-- 如果返回了false就调用rs.pause()暂停读取
-- 等待可写流写入完毕后 on('drain')在恢复读取 pipe方法的使用
+- 会监听 rs 的 on('data'),将读取到的内容调用 ws.write 方法
+- 调用写的方法会返回一个 boolean 类型
+- 如果返回了 false 就调用 rs.pause()暂停读取
+- 等待可写流写入完毕后 on('drain')在恢复读取 pipe 方法的使用
 
 ```javascript
-let fs = require('fs');
-let rs = fs.createReadStream('./2.txt',{
-  highWaterMark:1
-});
-let ws = fs.createWriteStream('./1.txt',{
-  highWaterMark:3
-});
-rs.pipe(ws); // 会控制速率(防止淹没可用内存)
+let fs = require('fs')
+let rs = fs.createReadStream('./2.txt', {
+  highWaterMark: 1,
+})
+let ws = fs.createWriteStream('./1.txt', {
+  highWaterMark: 3,
+})
+rs.pipe(ws) // 会控制速率(防止淹没可用内存)
 ```
 
 ## buffer 的概念
@@ -768,17 +765,17 @@ Buffer 就是 nodejs 中二进制的表述形式。
 ```js
 var str = '学习 nodejs stream'
 var buf = Buffer.from(str, 'utf-8')
-console.log(buf) 
+console.log(buf)
 // <Buffer e5 ad a6 e4 b9 a0 20 6e 6f 64 65 6a 73 20 73 74 72 65 61 6d>
-console.log(buf.toString('utf-8'))  
+console.log(buf.toString('utf-8'))
 // 学习 nodejs stream
 ```
 
 以上代码中，先通过 `Buffer.from` 将一段字符串转换为二进制形式，其中 `utf-8` 是一个编码规则。二进制打印出来之后是一个类似数组的对象（但它不是数组），每个元素都是两位的 16 进制数字，即代表一个 byte ，打印出来的 `buf` 一共有 20 byte 。**即根据 utf-8 的编码规则，这段字符串需要 20 byte 进行存储**。最后，再通过 `utf-8` 规则将二进制转换为字符串并打印出来。
 
-在node中，Buffer是用于存储二进制数据的，在内存中新开辟一块天地，在堆以外的内存
+在 node 中，Buffer 是用于存储二进制数据的，在内存中新开辟一块天地，在堆以外的内存
 
-一个关于buffer很典型的例子，就是你在线看视频的时候。如果你的网络足够快，数据流(stream)就可以足够快，可以让buffer迅速填满然后发送和处理，然后处理另一个，再发送，再另一个，再发送，然后整个stream完成。。。。。。
+一个关于 buffer 很典型的例子，就是你在线看视频的时候。如果你的网络足够快，数据流(stream)就可以足够快，可以让 buffer 迅速填满然后发送和处理，然后处理另一个，再发送，再另一个，再发送，然后整个 stream 完成。。。。。。
 
 ### 流动的数据是二进制格式
 
@@ -787,8 +784,8 @@ console.log(buf.toString('utf-8'))
 ```js
 var readStream = fs.createReadStream('./file1.txt')
 readStream.on('data', function (chunk) {
-    console.log(chunk instanceof Buffer)
-    console.log(chunk)
+  console.log(chunk instanceof Buffer)
+  console.log(chunk)
 })
 ```
 
@@ -799,11 +796,11 @@ readStream.on('data', function (chunk) {
 可以看到 stream 中流动的数据就是 Buffer 类型，就是二进制。因此，在使用 stream chunk 的时候，需要将这些二进制数据转换为相应的格式。例如之前讲解 post 请求，从 request 中接收数据就是这样。
 
 ```js
-var dataStr = '';
+var dataStr = ''
 req.on('data', function (chunk) {
-    var chunkStr = chunk.toString()  // 这里，将二进制转换为字符串
-    dataStr += chunkStr
-});
+  var chunkStr = chunk.toString() // 这里，将二进制转换为字符串
+  dataStr += chunkStr
+})
 ```
 
 **stream 中为何要“流动”二进制格式的数据呢？**
@@ -815,11 +812,11 @@ req.on('data', function (chunk) {
 补充一点，按照上面的说法，那无论是用 stream 读取文件还是 `fs.readFile` 读取文件，读出来的都应该是二进制格式？—— 答案是正确的。
 
 ```js
-var fileName = path.resolve(__dirname, 'data.txt');
+var fileName = path.resolve(__dirname, 'data.txt')
 fs.readFile(fileName, function (err, data) {
-    console.log(data instanceof Buffer)  // true
-    console.log(data)  // <Buffer 7b 0a 20 20 22 72 65 71 75 69 72 65 ...>
-});
+  console.log(data instanceof Buffer) // true
+  console.log(data) // <Buffer 7b 0a 20 20 22 72 65 71 75 69 72 65 ...>
+})
 ```
 
 ### Buffer 带来的性能提升
@@ -829,18 +826,18 @@ fs.readFile(fileName, function (err, data) {
 在之前的文件夹中新建 `buffer-test.txt` 文件，多粘贴一些文字进去，让文件大小 `500kb` 左右。
 
 ```js
-var http = require('http');
-var fs = require('fs');
-var path = require('path');
+var http = require('http')
+var fs = require('fs')
+var path = require('path')
 
 var server = http.createServer(function (req, res) {
-    var fileName = path.resolve(__dirname, 'buffer-test.txt');
-    fs.readFile(fileName, function (err, data) {
-        res.end(data)   // 测试1 ：直接返回二进制数据
-        // res.end(data.toString())  // 测试2 ：返回字符串数据
-    });
-});
-server.listen(8000);
+  var fileName = path.resolve(__dirname, 'buffer-test.txt')
+  fs.readFile(fileName, function (err, data) {
+    res.end(data) // 测试1 ：直接返回二进制数据
+    // res.end(data.toString())  // 测试2 ：返回字符串数据
+  })
+})
+server.listen(8000)
 ```
 
 对以上代码中两个需要测试的情况，使用 ab 工具运行 `ab -n 100 -c 100 http://localhost:8000/` 分别进行测试。
@@ -849,34 +846,33 @@ server.listen(8000);
 
 从测试结果可以看出，无论是从吞吐量（Requests per second）还是连接时间上，返回二进制格式比返回字符串格式效率提高很多。为何字符串格式效率低？—— 因为网络请求的数据本来就是二进制格式传输，虽然代码中写的是 response 返回字符串，最终还得再转换为二进制进行传输，多了一步操作，效率当然低了。
 
-### Buffer应用场景
+### Buffer 应用场景
 
-当数据流很大的时候，进行buffer缓存一下，进行进一步获取
+当数据流很大的时候，进行 buffer 缓存一下，进行进一步获取
 
-buffer不在node进程内存里面，所以可以用于存储大的文件，但是还是有限制 的32位系统的大约是1G，64位的系统 大约是2G
+buffer 不在 node 进程内存里面，所以可以用于存储大的文件，但是还是有限制 的 32 位系统的大约是 1G，64 位的系统 大约是 2G
 
 ### 如何使用
 
-在stream中，Node.js会自动帮你创建buffer之外，你也可以创建自己的buffer并操作它：
+在 stream 中，Node.js 会自动帮你创建 buffer 之外，你也可以创建自己的 buffer 并操作它：
 
-#### 手动创建buffer
+#### 手动创建 buffer
 
-##### Buffer存储数据未确定
+##### Buffer 存储数据未确定
 
 ```javascript
 // 创建一个大小为10的空buffer
 // 这个buffer只能承载10个字节的内容
-const buf1 = Buffer.alloc(10);
+const buf1 = Buffer.alloc(10)
 
 // 根据内容直接创建buffer
-const buf2 = Buffer.from("hello buffer");
-复制代码
+const buf2 = Buffer.from('hello buffer')
 // 创建一个大小为2的空buffer
 // 这个buffer只能承载2个字节的内容
-const buf1 = Buffer.alloc(2,'abcd');
+const buf1 = Buffer.alloc(2, 'abcd')
 
 //解码buffer  toString
-console.log(buf1.toString())  // ab 
+console.log(buf1.toString()) // ab
 
 // 检查buffer的大小  length
 console.log(buf1.length)
@@ -885,25 +881,25 @@ console.log(buf1.length)
 console.log(buf1.toJSON())
 ```
 
-#####  Buffer存储数据确定
+##### Buffer 存储数据确定
 
-Buffer.from(obj) // obj支持的类型string, buffer, arrayBuffer, array, or array-like object
+Buffer.from(obj) // obj 支持的类型 string, buffer, arrayBuffer, array, or array-like object
 
 若要传入数字可以采用传入数组的方式：
 
 ```javascript
-const buf = Buffer.from([1, 2, 3, 4]);
-console.log(buf); //  <Buffer 01 02 03 04>
+const buf = Buffer.from([1, 2, 3, 4])
+console.log(buf) //  <Buffer 01 02 03 04>
 
 // 根据内容直接创建buffer,不指定缓存大小,根据数据自动盛满并创建
-const buf2 = Buffer.from("hello buffer");
+const buf2 = Buffer.from('hello buffer')
 
 //写入数据到buffer
-buf2.write("Buffer really rocks!")
-console.log(buf2.toString())  //     //从缓冲区读取数据
+buf2.write('Buffer really rocks!')
+console.log(buf2.toString()) //     //从缓冲区读取数据
 ```
 
-#####	操作buffer：
+##### 操作 buffer：
 
 ```javascript
 // 检查下buffer的结构
@@ -915,14 +911,14 @@ buf1.toJSON()
 buf2.toJSON()
 // { type: 'Buffer',data: [ 104, 101, 108, 108, 111, 32, 98, 117, 102, 102, 101, 114 ] }
 // the toJSON() 方法可以将数据进行Unicode编码并展示
-   
+
 // 检查buffer的大小
 
 buf1.length // 10
-buf2.length //12 
+buf2.length //12
 
 //写入数据到buffer
-buf1.write("Buffer really rocks!")
+buf1.write('Buffer really rocks!')
 
 //解码buffer
 

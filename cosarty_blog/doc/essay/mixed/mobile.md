@@ -1,27 +1,22 @@
 # 移动端的一些细节
 
-## 移动端1px解决方案
+## 移动端 1px 解决方案
 
-::: normal-demo 移动端1px解决方案
+::: normal-demo 移动端 1px 解决方案
+
 ```html
 <div class="first">
-  <div class="first-div">
-    HELLO WORLD
-  </div>
+  <div class="first-div">HELLO WORLD</div>
 </div>
 ```
-<!-- ```js
-document.querySelector("#very").addEventListener("click", () => {
-  alert("非常强大");
-});
-``` -->
+
 ```css
-.first{
+.first {
   position: relative;
   font-size: 16px;
 }
-.first .first-div:before{
-  content: "";
+.first .first-div:before {
+  content: '';
   position: absolute;
   top: -50%;
   bottom: -50%;
@@ -32,7 +27,7 @@ document.querySelector("#very").addEventListener("click", () => {
   -webkit-transform: scale(0.5);
   transform: scale(0.5);
   border: solid 1px red;
-  box-sizing:border-box;
+  box-sizing: border-box;
 }
 ```
 

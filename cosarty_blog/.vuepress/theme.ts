@@ -36,8 +36,8 @@ export default hopeTheme({
     'Date',
     'Category',
     'Tag',
-    // 'ReadingTime',
-    'PageView',
+    'ReadingTime',
+    // 'PageView',
   ],
 
   blog: {
@@ -77,7 +77,7 @@ export default hopeTheme({
     //   favicon: '/favicon.ico',
     // },
     mdEnhance: {
-      lazyLoad: true,
+      // lazyLoad: true,
       tabs: true,
       codetabs: true,
       demo: true,
