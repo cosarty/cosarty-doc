@@ -32,3 +32,40 @@
 ```
 
 :::
+
+## align-items: center 垂直居中隐藏
+
+::: normal-demo lign-items: center 垂直居中隐藏
+
+```html
+  <div class="box">
+        测试
+  </div>
+```
+
+```css
+    body{
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      /* align-items: center; */
+    
+      padding: 0;
+      margin: 0;
+    }
+    .box{
+      width: 200px;
+      height: 300px;
+      background-color: red;
+    }
+
+    .box{
+      /* 采用margin 居中方案 */
+      margin-top: auto;
+      margin-bottom: auto;
+    }
+
+```
+
+:::

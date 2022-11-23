@@ -11,5 +11,5 @@ export default sidebar({
   ],
 
   '/doc/essay/npm-publish-guide':'structure',
-  '/doc/essay/mixed': ['mobile'],
+  '/doc/essay/mixed': ['mobile','js-skill'],
 })
