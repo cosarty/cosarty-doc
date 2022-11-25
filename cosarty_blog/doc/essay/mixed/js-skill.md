@@ -35,3 +35,12 @@ inp.addEventListener('compositionend',function(){
 ```
 
 :::
+
+## 判断js的启动环境
+
+```javascript
+require.main === module
+```
+判断js文件的执行环境是不是 node
+
+ - [具体细节可以看这一个视频](https://www.bilibili.com/video/av80554200/?zw&vd_source=c191d8a5710b10bf82cce87c957298ca)

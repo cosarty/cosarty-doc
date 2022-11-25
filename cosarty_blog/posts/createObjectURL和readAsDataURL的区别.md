@@ -1,6 +1,6 @@
 ---
 isOriginal: true
-
+description: readAsDataURL 和 createObjectURL
 tag:
   - js
 category: 前端
