@@ -3,7 +3,7 @@
 
 ## 合成事件
 > 多个按键对应一个文字
-::: normal-demo 移动端 1px 解决方案
+::: normal-demo 合成事件
 
 ```html
 <input type="text" />

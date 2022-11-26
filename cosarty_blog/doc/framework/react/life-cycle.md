@@ -48,7 +48,7 @@ render 阶段会执行众多生命周期钩子，例如：在首次渲染时执�
 
 ## getDerivedStateFromProps
 
-它是一个**静态方法**，接收 propspropsprops 和 statestatestate 两个参数。它会在调用 render 方法之前被调用，不管是在初始挂载时还是在后续组件更新时都会被调用。
+它是一个**静态方法**，接收 props 和 state两个参数。它会在调用 render 方法之前被调用，不管是在初始挂载时还是在后续组件更新时都会被调用。
 
 它的调用时机和 componentWillMount、componentWillUpdate、componentWillReceiveProps 一样都是在 render 方法被调用之前，它可以作为 componentWillMount、componentWillUpdate 和 componentWillReceiveProps 的替代方案。
 
