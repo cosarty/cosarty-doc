@@ -2,6 +2,7 @@ import { defineUserConfig } from 'vuepress'
 import theme from './theme.js'
 import { docsearchPlugin } from '@vuepress/plugin-docsearch'
 import { searchProPlugin } from "vuepress-plugin-search-pro";
+import { blog } from 'vuepress-theme-hope';
 export default defineUserConfig({
   lang: 'zh-CN',
   title: 'cosarty',
@@ -10,6 +11,7 @@ export default defineUserConfig({
   theme,
   shouldPrefetch: false,
   plugins: [
+    
     // docsearchPlugin({
     // }),
     searchProPlugin({
