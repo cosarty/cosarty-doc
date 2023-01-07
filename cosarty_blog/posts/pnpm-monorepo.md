@@ -84,7 +84,7 @@ date: 2022-10-28
         "react-dom": "^16.0.0"
     }
 }
-复制代码
+
 ```
 
 这里要注意的点：
@@ -133,7 +133,7 @@ $ npm publish
 npm ERR! code EPRIVATE
 npm ERR! This package has been marked as private
 npm ERR! Remove the 'private' field from the package.json to publish it.
-复制代码
+
 ```
 
 ## 模块类型
@@ -150,18 +150,17 @@ npm ERR! Remove the 'private' field from the package.json to publish it.
 
 ```json
 {
-    // -----单入口----
-    // 入口文件（使用 cjs 规范）
-    "main": "lib/index.js",
-    // 入口文件（使用 esm 规范）
-    "module": "es/index.js",
-    // 包类型导出
-    "typings": "typings/index.d.ts",
-    // 浏览器入口
-    "browser": "dist/index.js",
-    "sideEffects": false
+  // -----单入口----
+  // 入口文件（使用 cjs 规范）
+  "main": "lib/index.js",
+  // 入口文件（使用 esm 规范）
+  "module": "es/index.js",
+  // 包类型导出
+  "typings": "typings/index.d.ts",
+  // 浏览器入口
+  "browser": "dist/index.js",
+  "sideEffects": false
 }
-复制代码
 ```
 
 参数说明：
@@ -177,24 +176,23 @@ npm ERR! Remove the 'private' field from the package.json to publish it.
 
 ```json
 {
-     // ----多入口---
-    "exports": {
-        "./react": {
-            "import": "dist/react/index.js",
-            "require": "dist/react/index.cjs"
-        },
-        "./vue": {
-            "import": "dist/vue/index.js",
-            "require": "dist/vue/index.cjs"
-        }
+  // ----多入口---
+  "exports": {
+    "./react": {
+      "import": "dist/react/index.js",
+      "require": "dist/react/index.cjs"
     },
-    "browser": {
-        "./react": "dist/react/index.js",
-        "./vue": "dist/vue/index.js"
-    },
-    "sideEffects": false
+    "./vue": {
+      "import": "dist/vue/index.js",
+      "require": "dist/vue/index.cjs"
+    }
+  },
+  "browser": {
+    "./react": "dist/react/index.js",
+    "./vue": "dist/vue/index.js"
+  },
+  "sideEffects": false
 }
-复制代码
 ```
 
 参数说明：
@@ -238,7 +236,6 @@ npm ERR! Remove the 'private' field from the package.json to publish it.
 - .npmrc
 - package.json
 - pnpm-workspace.yaml
-  复制代码
 ```
 
 每个模块包的设计按照下面的步骤展开介绍：
@@ -265,7 +262,7 @@ npm ERR! Remove the 'private' field from the package.json to publish it.
      "@infras/shared": "workspace:*"
   }
 }
-复制代码
+
 ```
 
 > 为了更方便地调试 Monorepo 包模块，这里我们使用 [pnpm workspace 协议](https://link.juejin.cn?target=https%3A%2F%2Fpnpm.io%2Fworkspaces%23workspace-protocol-workspace)（同时 [yarn](https://link.juejin.cn?target=https%3A%2F%2Fyarnpkg.com%2Ffeatures%2Fworkspaces%23publishing-workspaces) 也支持了这一协议）。
@@ -288,7 +285,7 @@ const { sum } = require('@infras/shared/utils');
 {
  "extends": "@infras/shared/configs/tsconfig.base.json"
 }
-复制代码
+
 ```
 
 ### 构建出 esm、cjs 格式
@@ -319,7 +316,7 @@ export default defineConfig({
   outDir: "dist",
   format: ['cjs', 'esm']
 });
-复制代码
+
 ```
 
 执行下 `tsup` 会生成 `dist` 目录，结构如下：
@@ -337,7 +334,6 @@ export default defineConfig({
 - utils
 - types
 - package.json
-  复制代码
 ```
 
 注：不将多入口 utils、types 目录放到 src 目的是为了在 Monorepo 项目中有更好的 TS 类型支持！实际是用了障眼法，将类型提示指向源文件 ts，真正使用的是 dist 产物目录，比如：
@@ -382,7 +378,7 @@ export default defineConfig({
     "tsup": "^5.10.3"
   }
 }
-复制代码
+
 ```
 
 - `scripts.prepare`：给模块包加上 [prepare](https://link.juejin.cn?target=https%3A%2F%2Fdocs.npmjs.com%2Fcli%2Fv8%2Fusing-npm%2Fscripts%23life-cycle-scripts) 构建脚本后，执行的时机包括：
@@ -421,7 +417,7 @@ Vite 中使用 `pnpm start --filter "vite-app" `：
 // apps/*/package.json
 {
   "dependencies": {
-     "@infras/ui": "workspace:*"
+    "@infras/ui": "workspace:*"
   },
   // 非 Vite 应用
   "dependenciesMeta": {
@@ -430,7 +426,6 @@ Vite 中使用 `pnpm start --filter "vite-app" `：
     }
   }
 }
-复制代码
 ```
 
 #### dependenciesMeta 起因
@@ -446,7 +441,7 @@ Vite 中使用 `pnpm start --filter "vite-app" `：
  |  |- react@17.0.0
  |- @infras/ui
  |  |- react@16.0.0 <- devDependencies
-复制代码
+
 ```
 
 在此之前，要解决这个问题，之前有两种方案：
@@ -461,7 +456,7 @@ Vite 中使用 `pnpm start --filter "vite-app" `：
    node_modules
      @infras/ui
 -      node_modules
-复制代码
+
 ```
 
 1. 前端使用：分别在 React、Vue 项目中引入组件库
@@ -478,7 +473,7 @@ import { Component } from '@infras/ui/vue';
 <template>
     <Component />
 </template>
-复制代码
+
 ```
 
 > 对于不同前端框架的组件，**不建议从一个入口导出**（即 `import { ReactC, VueC } from 'ui'`），这样会给应用的按需编译带来很大的麻烦！
@@ -494,7 +489,6 @@ console.log(
   'SSR: ',
   ReactDOMServer.renderToString(React.createElement(Component))
 )
-复制代码
 ```
 
 为了同时构建 **React、Vue 组件库模块**，包目录设计大致如下：
@@ -509,7 +503,6 @@ console.log(
   - Component.vue
   - index.ts
 - package.json
-  复制代码
 ```
 
 ### 构建出 esm、cjs、umd
@@ -581,7 +574,7 @@ export default defineConfig([
     ]
   }
 ])
-复制代码
+
 ```
 
 执行 `rollup --config rollup.config.js` 后，就会生成 `dist` 、`es`、`lib`目录：
@@ -601,7 +594,6 @@ export default defineConfig([
 - react
 - vue
 - package.json
-  复制代码
 ```
 
 ### package.json
@@ -647,7 +639,7 @@ export default defineConfig([
     "rollup/...": "^2.60.2"
   }
 }
-复制代码
+
 ```
 
 组件库在 package.json 声明有一点**特别**要**注意**：
@@ -661,7 +653,7 @@ export default defineConfig([
 +   "./vue": "./es/vue/index.js"
 + },
 }
-复制代码
+
 ```
 
 原因：Webpack 5 以下不支持 `exports` 配置 [webpack#9509](https://link.juejin.cn?target=https%3A%2F%2Fgithub.com%2Fwebpack%2Fwebpack%2Fissues%2F9509)。 Webpack 4 优先走 `browser`，而 Webpack 5 优先走 `exports`。
@@ -697,7 +689,7 @@ export default defineConfig([
      "@infras/rs": "workspace:*"
   {
 }
-复制代码
+
 ```
 
 1. Node.js 中调用：
@@ -708,7 +700,6 @@ const { sum } = require('@infras/rs')
 console.log('Rust `sum(1, 1)`:', sum(1, 1)) // 2
 // apps/node-app/index.mjs
 import { sum } from '@infras/rs'
-复制代码
 ```
 
 ### 构建出 cjs
@@ -725,7 +716,6 @@ import { sum } from '@infras/rs'
 - index.d.ts
 - package.json
 - Cargo.toml
-  复制代码
 ```
 
 ### package.json
@@ -750,7 +740,7 @@ import { sum } from '@infras/rs'
     "version": "napi version"
   }
 }
-复制代码
+
 ```
 
 ### 运行
@@ -769,7 +759,7 @@ Node 项目中 `pnpm start --filter "node-app"`，这样看 Rust 编译后的函
 
 ```css
 $ pnpm -r publish --tag latest
-复制代码
+
 ```
 
 如果想增加包发布的 changelog，可以参考 [using-changesets](https://link.juejin.cn?target=https%3A%2F%2Fpnpm.io%2Fusing-changesets)
