@@ -9,7 +9,7 @@ export default navbar([
     children: [
       {
         text: 'vue',
-        link: 'vue/vue3',
+        link: 'vue/vite-framework',
       },
       {
         text: 'react',

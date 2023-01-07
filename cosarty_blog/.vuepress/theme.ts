@@ -27,7 +27,8 @@ export default hopeTheme({
   sidebar: sidebar,
   fullscreen: true,
   // footer: "默认页脚",
-  darkmode: 'auto',
+  // darkmode: 'auto',
+  darkmode: 'switch',
   displayFooter: true,
 
   pageInfo: [
@@ -46,7 +47,7 @@ export default hopeTheme({
     medias: {
       Email: '1398675906@qq.com',
     },
-    timeline:'时间轴'
+    timeline: '时间轴',
   },
 
   // encrypt: {
@@ -57,7 +58,6 @@ export default hopeTheme({
 
   plugins: {
     blog: {
-
       autoExcerpt: true,
       filter: (page) =>
         NOTES_PASS.some((reg) => reg.test(page.filePathRelative || '')) &&
