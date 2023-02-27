@@ -25,7 +25,7 @@ export default navbar([
   {
     text: '食用手册',
     prefix: '/doc/essay/handbook/',
-    children: ['scss'],
+    children: ['scss','nestjs-frame'],
   },
   {
     text: '杂七杂八',
