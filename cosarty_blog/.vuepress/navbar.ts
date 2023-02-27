@@ -18,28 +18,19 @@ export default navbar([
     ],
   },
   {
-    text: '部署',
-    prefix: '/doc/deploy/',
-    children: [
-      {
-        text: 'nginx',
-        link: 'nginx',
-      },
-    ],
-  },
-  {
     text: '随笔',
     prefix: '/doc/essay/',
-    children: [
-      {
-        text: 'npm发包指南',
-        link: 'npm-publish-guide',
-      },
-      {
-        text: '杂七杂八',
-        link: 'mixed/mobile',
-      },
-    ],
+    children: ['npm-publish-guide', 'nginx'],
+  },
+  {
+    text: '食用手册',
+    prefix: '/doc/essay/handbook/',
+    children: ['scss'],
+  },
+  {
+    text: '杂七杂八',
+    prefix: '/doc/essay/mixed/',
+    children: ['mobile', 'js-skill'],
   },
   {
     text: '关于',

@@ -8,14 +8,14 @@ category: 前端
 date: 2022-09-17
 ---
 
-# vite使用
+# vite 使用
 
 ## 什么是构建工具
 
 企业级项目里面都具有哪些功能
 
-1. typescript 
-2. React/Vue 安装 react-complier / Vue-complier 将我们写的jsx文件或者.vue  转换为render 函数 
+1. typescript
+2. React/Vue 安装 react-complier / Vue-complier 将我们写的 jsx 文件或者.vue 转换为 render 函数
 3. less/sass/postcss/component-style
 4. 语法降级 :babel ---> 将新语法装换为旧版浏览器可以支持的语法
 5. 体积优化 : uglifyjs ---> 代码压缩
@@ -23,9 +23,9 @@ date: 2022-09-17
 
 而帮我们把这些东西集成到一起，这就是构建工具
 
-## vite相较于webpack有什么优势
+## vite 相较于 webpack 有什么优势
 
-可以看我之前写的这篇文章[Vite 和Webpack 的核心差异](./Vite%20%E5%92%8CWebpack%20%E7%9A%84%E6%A0%B8%E5%BF%83%E5%B7%AE%E5%BC%82.md)
+可以看我之前写的这篇文章[Vite 和 Webpack 的核心差异](./Vite%20%E5%92%8CWebpack%20%E7%9A%84%E6%A0%B8%E5%BF%83%E5%B7%AE%E5%BC%82.md)
 
 ::: note 安装
 
@@ -39,7 +39,7 @@ date: 2022-09-17
 
 > 根据当前代码环境产生值的变化叫做环境变量
 
-- vite环境变量主要使用了 dotenv这个第三方库 
+- vite 环境变量主要使用了 dotenv 这个第三方库
 
 1. 开发环境
 2. 测试环境
@@ -47,31 +47,31 @@ date: 2022-09-17
 4. 灰度环境
 5. 生成环境
 
-[vite环境变量配置](https://www.vitejs.net/guide/env-and-mode.html)
+[vite 环境变量配置](https://www.vitejs.net/guide/env-and-mode.html)
 
+## css 模块处理
 
-## css模块处理
-
-vite天生支持css模块导入
+vite 天生支持 css 模块导入
 
 `基本原理`
-1. vite在读到使用import导入css文件的时候，直接使用fs模块去读取css文件中的内容
-2. 直接创建的一个style标签将css文件里面的内容复制到标签内，然后追加到index.html 的头部
-3. 将css文件的内容直接替换为js脚本，同时设置`content-type:appliction/javascript`，从而让浏览器已js脚本执行该css
 
-> 直接引入css会导致 全局污染
+1. vite 在读到使用 import 导入 css 文件的时候，直接使用 fs 模块去读取 css 文件中的内容
+2. 直接创建的一个 style 标签将 css 文件里面的内容复制到标签内，然后追加到 index.html 的头部
+3. 将 css 文件的内容直接替换为 js 脚本，同时设置`content-type:appliction/javascript`，从而让浏览器已 js 脚本执行该 css
+
+> 直接引入 css 会导致 全局污染
 
 ![1663423317049](../.vuepress/public/assets/posts/20220917/1663423317049.png)
 
 ![1663423417149](../.vuepress/public/assets/posts/20220917/1663423417149.png)
 
-###  引入cssmodule
+### 引入 cssmodule
 
 ::: tip
 
-module后缀是一个约定俗成
+module 后缀是一个约定俗成
 
-它会生成一个映射对象 类名为key  值会hash
+它会生成一个映射对象 类名为 key 值会 hash
 
 :::
 
@@ -79,13 +79,11 @@ module后缀是一个约定俗成
 import styles from './style.module.css'
 ```
 
-
-
 ![1663423657840](../.vuepress/public/assets/posts/20220917/1663423657840.png)
 
-### 配置css的行为
+### 配置 css 的行为
 
-> 在vite.config.ts中配置
+> 在 vite.config.ts 中配置
 
 ```typescript
 interface CSSModulesOptions {
@@ -104,35 +102,35 @@ interface CSSModulesOptions {
 
 ::: details 详解
 
-localsConvention: 配置生成对象的key形式 是驼峰还是中划线
+localsConvention: 配置生成对象的 key 形式 是驼峰还是中划线
 
 scopeBehaviour: 配置模块生成规则是全局还是模块化
 
 generateScopedName: 生成的类名规则 例:[name]_[local]_ [hash:5][格式详情](https://github.com/webpack/loader-utils#interpolatename)
 
-globalModulePaths: 不参与模块化的css文件路径  
+globalModulePaths: 不参与模块化的 css 文件路径
 
 :::
 
-### 配置css预处理器行为
+### 配置 css 预处理器行为
 
->  css.preprocessorOptions  可以注入全局参数
+> css.preprocessorOptions 可以注入全局参数
 
 ```typescript
 export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `$injectedColor: orange;`
-      }
-    }
-  }
+        additionalData: `$injectedColor: orange;`,
+      },
+    },
+  },
 })
 ```
 
-## vite的配置细节
+## vite 的配置细节
 
-## vite配置
+## vite 配置
 
 ::: info 提示
 
@@ -141,9 +139,11 @@ export default defineConfig({
 :::
 
 ### base
- -  配置静态文件的基准路径
+
+- 配置静态文件的基准路径
 
 ### alias
+
 ```json
   resolve: {
     alias: {
@@ -152,7 +152,8 @@ export default defineConfig({
   },
 ```
 
-### 去除console
+### 去除 console
+
 ```json
  build: {
     minify: 'terser',
@@ -166,6 +167,7 @@ export default defineConfig({
 ```
 
 ### ElementPulus 按需加载
+
 ```javascript
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
@@ -183,8 +185,9 @@ import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 ```
 
 ### Vite-Compression-Plugin 代码压缩
+
 :::info 安装
- yarn add vite-compression-plugin -D
+yarn add vite-compression-plugin -D
 :::
 
 ```javascript
@@ -195,10 +198,11 @@ import Compression from 'vite-compression-plugin'
 export default defineConfig({
   plugins: [
     // ...your plugin
-    Compression()
-  ]
+    Compression(),
+  ],
 })
 ```
+
 ### 依赖预构建
 
 ```javascript
@@ -210,22 +214,19 @@ export default defineConfig({
 ### 生成环境和开发环境配置
 
 ```javascript
-
 const envResolver = {
-    "build":()=>Object.assign(baseConfig,prodConfig),
-    "serve":()=>Object.assign(baseConfig,devConfig)
+  build: () => Object.assign(baseConfig, prodConfig),
+  serve: () => Object.assign(baseConfig, devConfig),
 }
 
 export default defineConfig(({ command, mode }) => {
-    return envResolver[command]
+  return envResolver[command]
 })
-
 ```
 
 ### 自定义分包策略
 
-> build.rollupOptions.output.manualChunks  [详情阅读](https://github.com/laoyutong/blog/issues/27)
+> build.rollupOptions.output.manualChunks [详情阅读](https://github.com/laoyutong/blog/issues/27)
 
-### postcss
+## 插件介绍
 
-> css,postcss
