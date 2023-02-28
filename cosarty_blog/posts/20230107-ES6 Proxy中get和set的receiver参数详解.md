@@ -1,5 +1,5 @@
 ---
-description: nestjs使用总结
+description: ES6 Proxy 中 get 和 set 的 receiver 参数详解
 tag:
   - js
   - 小知识

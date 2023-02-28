@@ -15,7 +15,7 @@
   position: relative;
   font-size: 16px;
 }
-.first .first-div:before {
+.first .first-div:before { 
   content: '';
   position: absolute;
   top: -50%;
