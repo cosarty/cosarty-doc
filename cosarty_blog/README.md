@@ -1,6 +1,6 @@
 ---
 home: true
-layout: Blog
+layout: BlogHome
 icon: home
 title: 首页
 bgImage: /wallhaven-yjx8gx.jpg

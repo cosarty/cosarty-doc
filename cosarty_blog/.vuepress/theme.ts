@@ -58,7 +58,8 @@ export default hopeTheme({
 
   plugins: {
     blog: {
-      autoExcerpt: true,
+      // autoExcerpt: true,
+      excerptLength:0,
       filter: (page) =>
         NOTES_PASS.some((reg) => reg.test(page.filePathRelative || '')) &&
         !page.frontmatter.home,
