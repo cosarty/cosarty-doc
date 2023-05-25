@@ -2,7 +2,6 @@
 **/dist
 **/.cache
 **/.temp
-.github
 pnpm-lock.yaml
 **/.pnpm-debug.log
 **/assets
