@@ -79,15 +79,14 @@ jobs:
       - name: 构建文档
         env:
           NODE_OPTIONS: --max_old_space_size=8192
-        run: |-
-          pnpm run docs:build
-          > cosarty_blog/.vuepress/dist/.nojekyll
+        run: pnpm run docs:build
+         # > cosarty_blog/.vuepress/dist/.nojekyll
       # Deploy to aliyun
       - name: 部署到阿里服务器
-        uses: easingthemes/ssh-deploy@v2.1.5
+        uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.ALIYUN_SERVER_ACCESS_TOKEN }}
-          ARGS: "-avzr --delete"
+          ARGS: "-avz --delete"
           SOURCE: "cosarty_blog/.vuepress/dist"
           REMOTE_HOST: ${{ secrets.ALIYUN_SERVER_HOST }}
           REMOTE_USER: root
