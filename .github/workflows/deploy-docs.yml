@@ -49,10 +49,11 @@
 #           branch: gh-pages
 #           folder: cosarty_blog/.vuepress/dist
 name: deploy to aliyun
+
 on:
   push:
-    branches:
-      - master
+    branches: ['master']
+
 jobs:
   deploy-website:
     runs-on: ubuntu-latest
@@ -75,7 +76,7 @@ jobs:
         run: pnpm install --frozen-lockfile
         env:
           CI: true
-     - name: 构建文档
+      - name: 构建文档
         env:
           NODE_OPTIONS: --max_old_space_size=8192
         run: |-
