@@ -54,7 +54,7 @@ on:
     branches:
       - master
 jobs:
-  build:
+  deploy-website:
     runs-on: ubuntu-latest
     steps:
       # 切换分支
