@@ -17,15 +17,15 @@ export default navbar([
       },
     ],
   },
-  {
-    text: '随笔',
-    prefix: '/doc/essay/',
-    children: ['npm-publish-guide', 'nginx'],
-  },
+  // {
+  //   text: '随笔',
+  //   prefix: '/doc/essay/',
+  //   children: [],
+  // },
   {
     text: '食用手册',
     prefix: '/doc/essay/handbook/',
-    children: ['scss','nestjs-frame','vite-plugin'],
+    children: ['scss','nestjs-frame','vite-plugin','npm-publish-guide', 'nginx'],
   },
   {
     text: '杂七杂八',

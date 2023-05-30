@@ -3,7 +3,8 @@
 ## 合成事件
 
 > 多个按键对应一个文字
-> ::: normal-demo 合成事件
+
+::: normal-demo 合成事件
 
 ```html
 <input type="text" />
@@ -53,3 +54,31 @@ const isMobile =
     ua
   )
 ```
+
+## 正则表达式 lastIndex 的 技巧
+
+::: tip
+当正则表达式开启 `g`、`y`模式的时候会记录 lastIndex 的值，每次匹配都从 lastIndex 开始匹配，所以会导致匹配不准，因此需要重新设置 lastIndex 的值
+:::
+
+::: normal-demo 合成事件
+
+```html
+密码校验: <input id="inp" /> <span id="tip"></span>
+```
+
+```js
+const input = document.getElementById('inp')
+const tip = document.getElementById('tip')
+const reg = /^1\d{10}$/g
+input.oninput = change = (e) => {
+  reg.lastIndex = 0
+  if (reg.test(e.target.value)) {
+    tip.textContent = '过'
+  } else {
+    tip.textContent = '不过'
+  }
+}
+```
+
+:::
