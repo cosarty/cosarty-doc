@@ -38,7 +38,7 @@ Nginx ("engine x") 是一款开源的，支持高性能、高并发的 Web 服�
 
 我们可以在这网网站，
 
-![1657530052574](../../.vuepress/public/assets/doc/deploy/nginx/1657530052574.7ce836ab.png)
+![1657530052574](../../../../.vuepress/public/assets/doc/deploy/nginx/1657530052574.7ce836ab.png)
 
 我们摘取几个和大家分享一下：
 
@@ -80,7 +80,7 @@ Nginx ("engine x") 是一款开源的，支持高性能、高并发的 Web 服�
 
 进入nginx官网（http://nginx.org/en/）：
 
-![1657531156233](../../.vuepress/public/assets/doc/deploy/nginx/1657531156233.a7274079.png)
+![1657531156233](../../../.vuepress/public/assets/doc/deploy/nginx/1657531156233.a7274079.png)
 
 Nginx官网提供了三个类型的版本
 
@@ -90,7 +90,7 @@ Nginx官网提供了三个类型的版本
 
 我们下载这个最新的稳定版本：
 
-![1657531361055](../../.vuepress/public/assets/doc/deploy/nginx/1657531361055.acd562a3.png)
+![1657531361055](../../../.vuepress/public/assets/doc/deploy/nginx/1657531361055.acd562a3.png)
 
 #### 2、安装依赖包
 
@@ -125,7 +125,7 @@ devel 包主要是供开发用，至少包括以下2个东西头文件和链接�
 wget http://nginx.org/download/nginx-1.22.0.tar.gz
 ```
 
-![1657535839648](../../.vuepress/public/assets/doc/deploy/nginx/1657535839648.dbb22e94.png)
+![1657535839648](../../../.vuepress/public/assets/doc/deploy/nginx/1657535839648.dbb22e94.png)
 
 解压：
 
@@ -174,7 +174,7 @@ make && make install
 ```
 
 
-![1657540449988](../../.vuepress/public/assets/doc/deploy/nginx/1657540449988.903f8df3.png)
+![1657540449988](../../../.vuepress/public/assets/doc/deploy/nginx/1657540449988.903f8df3.png)
 
 > 测试nginx配置文件是否正常
 
@@ -221,17 +221,17 @@ netstat -nplt
 ```
 
 
-![1657540929779](../../.vuepress/public/assets/doc/deploy/nginx/1657540929779.ca292d0c.png)
+![1657540929779](../../../.vuepress/public/assets/doc/deploy/nginx/1657540929779.ca292d0c.png)
 
 在浏览器输入服务器地址：
 
-![image-20220706172230504](../../.vuepress/public/assets/doc/deploy/nginx/image-20220706172230504.4c7d5b14.png)
+![image-20220706172230504](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220706172230504.4c7d5b14.png)
 
 ### 六、nginx配置文件
 
 nginx安装目录，如下：
 
-![1657541074372](../../.vuepress/public/assets/doc/deploy/nginx/1657541074372.2b553dab.png)
+![1657541074372](../../../.vuepress/public/assets/doc/deploy/nginx/1657541074372.2b553dab.png)
 
 > 配置基础配置文件
 
@@ -268,13 +268,13 @@ HTTP/1.1 200 OK
 
 我们不妨先思考一个问题，我们看到的网页是在哪里呢，我们通过`root html`配置结合安装目录中有html目录，大概能猜出来，首页的文件就在html文件夹：
 
-![1657542245510](../../.vuepress/public/assets/doc/deploy/nginx/1657542245510.9ccd3363.png)
+![1657542245510](../../../.vuepress/public/assets/doc/deploy/nginx/1657542245510.9ccd3363.png)
 
 ```bash
 curl 127.0.0.1
 ```
 
-![1657542307377](../../.vuepress/public/assets/doc/deploy/nginx/1657542307377.b2f65d2b.png)
+![1657542307377](../../../.vuepress/public/assets/doc/deploy/nginx/1657542307377.b2f65d2b.png)
 
 ### 七、配置文件解读
 
@@ -291,7 +291,7 @@ main{ #（全局设置）
 }
 ```
 
-server继承自main，location继承自server，upstream即不会继承其他设置也不会被继承。 ![image-20220606171640915](../../.vuepress/public/assets/doc/deploy/nginx/image-20220606171640915.d0d40614.png)
+server继承自main，location继承自server，upstream即不会继承其他设置也不会被继承。 ![image-20220606171640915](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220606171640915.d0d40614.png)
 
 #### 1、main 全局配置
 
@@ -321,7 +321,7 @@ worker_rlimit_nofile 65535;
 
 我们可以使用`ps -ef | grep nginx`查看master和worker的进程，这里有一个master和四个worker：
 
-![image-20220713182916582](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713182916582.7d761cef.png)
+![image-20220713182916582](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713182916582.7d761cef.png)
 
 #### 2、events模块
 
@@ -366,11 +366,11 @@ http{
 
 创建一个最简单的springboot项目：
 
-![1657507807889](../../.vuepress/public/assets/doc/deploy/nginx/1657507807889.8ffd6220.png)
+![1657507807889](../../../.vuepress/public/assets/doc/deploy/nginx/1657507807889.8ffd6220.png)
 
 只需要依赖一个web模块即可：
 
-![image-20220713092526231](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713092526231.f68f20ca.png)
+![image-20220713092526231](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713092526231.f68f20ca.png)
 
 提供一个api接口，可以获取服务端的主机地址和服务端口：
 
@@ -402,7 +402,7 @@ public class NginxController implements ApplicationListener<WebServerInitialized
 
 测试接口：
 
-![image-20220713094617222](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713094617222.f5e63e7a.png)
+![image-20220713094617222](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713094617222.f5e63e7a.png)
 
 ### 二、搭建前端项目
 
@@ -415,11 +415,11 @@ https://cli.vuejs.org/guide/creating-a-project.html
 
 使用`vue ui`搭建脚手架，选择安装vue-router：
 
-![1657507661343](../../.vuepress/public/assets/doc/deploy/nginx/1657507661343.1264f023.png)
+![1657507661343](../../../.vuepress/public/assets/doc/deploy/nginx/1657507661343.1264f023.png)
 
 启动项目，打开项目：
 
-![1657509039232](../../.vuepress/public/assets/doc/deploy/nginx/1657509039232.85fa6931.png)
+![1657509039232](../../../.vuepress/public/assets/doc/deploy/nginx/1657509039232.85fa6931.png)
 
 安装axios：
 
@@ -459,7 +459,7 @@ export default {
 
 浏览器访问，发生了跨域问题：
 
-![1657509682419](../../.vuepress/public/assets/doc/deploy/nginx/1657509682419.d88211fc.png)
+![1657509682419](../../../.vuepress/public/assets/doc/deploy/nginx/1657509682419.d88211fc.png)
 
 添加配置项，新建`vue.config.js`位置文件，配置代理如下:
 
@@ -486,13 +486,13 @@ mounted(){
 
 再次访问前端工程，发现跨域问题解决：
 
-![1657510276751](../../.vuepress/public/assets/doc/deploy/nginx/1657510276751.45fc20bd.png)
+![1657510276751](../../../.vuepress/public/assets/doc/deploy/nginx/1657510276751.45fc20bd.png)
 
 ### 三、nginx做静态服务器
 
 我们都知道，nginx的安装目录中有这样一个文件夹：
 
-![image-20220712152343632](../../.vuepress/public/assets/doc/deploy/nginx/image-20220712152343632.b6290bdc.png)
+![image-20220712152343632](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220712152343632.b6290bdc.png)
 
 我们再结合nginx的基础配置文件中的以下内容：
 
@@ -512,7 +512,7 @@ server {
 
 我们不妨修改一下index.html文件看看，修改是否可以生效。
 
-![image-20220712153302770](../../.vuepress/public/assets/doc/deploy/nginx/image-20220712153302770.534eec67.png)
+![image-20220712153302770](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220712153302770.534eec67.png)
 
 确实可以生效，于是我们可以得出，结论只需要将我们的q前端文件放在html目录即可（事实上放在哪里都可以）。
 
@@ -520,19 +520,19 @@ server {
 
 前端工程产物如下：
 
-![image-20220713131449954](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713131449954.a4979cf4.png)
+![image-20220713131449954](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713131449954.a4979cf4.png)
 
 上传至nginx：
 
-![image-20220713132032861](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713132032861.981fcea7.png)
+![image-20220713132032861](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713132032861.981fcea7.png)
 
 他真的可以访问了，但是，此时却出现了问题，ngixn无法判断哪些是静态资源，哪些是需要访问api接口的：
 
-![image-20220713132138381](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713132138381.ec54fad9.png)
+![image-20220713132138381](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713132138381.ec54fad9.png)
 
 问题如下，此问题按下不表，后续处理：
 
-![image-20220713132219959](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713132219959.7fb714a1.png)
+![image-20220713132219959](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713132219959.7fb714a1.png)
 
 ### 四、虚拟主机配置详解
 
@@ -685,11 +685,11 @@ location @other {
 
 我们在前端直接点击路由的按钮可以访问，因为这种情况并未再次向nginx发送请求，仅仅是前端的路由切换：
 
-![image-20220714164105074](../../.vuepress/public/assets/doc/deploy/nginx/image-20220714164105074.a93f281a.png)
+![image-20220714164105074](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220714164105074.a93f281a.png)
 
 但是，如果直接访问`/about`就GG了，这个url直接访问nginx时，nginx会认为你要查找about这个资源，当然是404了：
 
-![image-20220714164156365](../../.vuepress/public/assets/doc/deploy/nginx/image-20220714164156365.6b100278.png)
+![image-20220714164156365](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220714164156365.6b100278.png)
 
 所以我们要通过一些配置来解决这个问题，vue工程都是单页面的，所以无论哪个路由都应该使用唯一的index.html，所以我们可以做如下的配置，该配置的意思就是将其他的所有请求，都强制使用/index.html：
 
@@ -745,11 +745,11 @@ gzip_vary on;
 
 这一次没有设置图片压缩：
 
-![image-20220713153150102](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713153150102.ca095497.png)
+![image-20220713153150102](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713153150102.ca095497.png)
 
 设置图片压缩后，响应多了如下的首部信息：
 
-![image-20220713153422776](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713153422776.1dce8c84.png)
+![image-20220713153422776](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713153422776.1dce8c84.png)
 
 ### 五、反向代理解决跨域
 
@@ -764,17 +764,17 @@ location / {
 ```
 
 
-![image-20220713160342661](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713160342661.a6e6f2fa.png)
+![image-20220713160342661](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713160342661.a6e6f2fa.png)
 
 我们的实现逻辑很简单，就是将以`/api`为前缀的uri全部反向代理到真正的后端服务即可。
 
 安装java环境：
 
-![image-20220713161110581](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713161110581.785e07ad.png)
+![image-20220713161110581](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713161110581.785e07ad.png)
 
 后台启动成功：
 
-![image-20220713161557596](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713161557596.d7964e5e.png)
+![image-20220713161557596](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713161557596.d7964e5e.png)
 
 我们为了区分前端页面和api接口，将所有访问后端api的url统一加上前缀 /api
 
@@ -936,15 +936,15 @@ location ^~ /api/ {
 
 在浏览器中不停的刷新，发现端口在不停的变化，说明我们的多次请求确实落在了不同服务上。
 
-![image-20220713171258079](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713171258079.eee6d3ab.png)
+![image-20220713171258079](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713171258079.eee6d3ab.png)
 
-![image-20220713171229793](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713171229793.48f7dfb3.png)
+![image-20220713171229793](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713171229793.48f7dfb3.png)
 
 ### 七、其他的跨域问题
 
 如果现在本机的前端项目（也就是其他服务器的前端项目）也想要访问虚拟机中ngixn代理的api接口。这是一个典型的不同的项目之间进行访问的问题，这必然存在跨域问题，如下图：
 
-![image-20220713175913937](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713175913937.3a1a0718.png)
+![image-20220713175913937](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713175913937.3a1a0718.png)
 
 我们将本地的vue工程进行如下修改：
 
@@ -959,7 +959,7 @@ mounted(){
 
 此时，确实发生了跨域问题：
 
-![image-20220713172639758](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713172639758.500766cd.png)
+![image-20220713172639758](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713172639758.500766cd.png)
 
 根据我们学习过的知识要解决跨域问题。其实，只需要在客户端发送【预检请求】时指定对应的响应头即可，nginx可以很方便的给响应增加一些首部信息，方法如下，在：
 
@@ -976,11 +976,11 @@ location ^~ /api/ {
 
 访问本地地址，本次访问跨域的问题被解决了：
 
-![image-20220713172843173](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713172843173.7a1457c5.png)
+![image-20220713172843173](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713172843173.7a1457c5.png)
 
 我们也能看到对应的响应首部信息，多了如下内容：
 
-![image-20220713180106546](../../.vuepress/public/assets/doc/deploy/nginx/image-20220713180106546.01b1e3a2.png)
+![image-20220713180106546](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220713180106546.01b1e3a2.png)
 
 ### 八、nginx监控
 
@@ -1013,7 +1013,7 @@ Reading: 0 Writing: 1 Waiting: 0
 
 我们可以访问/status查看当前nginx的状态：
 
-![image-20220706172922752](../../.vuepress/public/assets/doc/deploy/nginx/image-20220706172922752.f43db494.png)
+![image-20220706172922752](../../../.vuepress/public/assets/doc/deploy/nginx/image-20220706172922752.f43db494.png)
 
 | 状态码             | 表示的意义                                                   |
 | ------------------ | ------------------------------------------------------------ |
