@@ -13,4 +13,26 @@ export default sidebar({
   '/doc/essay/npm-publish-guide': 'structure',
   '/doc/essay/mixed': ['mobile', 'js-skill'],
   '/doc/essay/handbook': 'structure',
+  '/doc/interview': [
+    {
+      text: 'css',
+      link: 'css',
+    },
+    {
+      text: 'html',
+      link: 'html',
+    },
+    {
+      text: 'javascript',
+      link: 'javascript',
+    },
+    {
+      text: 'react',
+      link: 'react',
+    },
+    {
+      text: 'vue',
+      link: 'vue',
+    },
+  ],
 })

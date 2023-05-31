@@ -25,7 +25,18 @@ export default navbar([
   {
     text: '食用手册',
     prefix: '/doc/essay/handbook/',
-    children: ['scss','nestjs-frame','vite-plugin','npm-publish-guide', 'nginx'],
+    children: [
+      'scss',
+      'nestjs-frame',
+      'vite-plugin',
+      'npm-publish-guide',
+      'nginx',
+    ],
+  },
+  {
+    text: '面经',
+    prefix: '/interview',
+    link: '/doc/interview',
   },
   {
     text: '杂七杂八',
