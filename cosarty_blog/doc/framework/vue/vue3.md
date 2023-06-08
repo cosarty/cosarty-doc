@@ -1,1 +1,64 @@
 # vue3
+
+## props 和 v-model 的妙用
+
+::: tabs
+
+@tab App.vue
+
+```vue
+<template>
+  <Test v-model="data" />
+</template>
+
+<script setup>
+const data = reactive({
+  a: '',
+  b: '',
+  c: '',
+  d: '',
+  e: '',
+})
+</script>
+```
+
+@tab Test.vue
+
+```vue
+
+ <template>
+   <input v-model='model.a'/>
+   <input v-model='model.b'/>
+   <input v-model='model.c'/>
+   <input v-model='model.d'/>
+   <input v-model='model.e'/>
+ </tempalte>
+
+
+<script setup>
+const porps =  defineProps({
+   modelValue:Object
+ })
+
+ defineEmi(['update:modelValue'])
+
+ const model = computed({
+   get(){
+     return new Proxy(porps.modelValue,{
+       set(target,key,value,receiver){
+          emit('update:modelValue',{...target,[key]:value})
+        return true
+       }
+     })
+   },
+   set(nv){
+     emit('update:modelValue',nv)
+   }
+ })
+
+
+</script>
+
+```
+
+:::
