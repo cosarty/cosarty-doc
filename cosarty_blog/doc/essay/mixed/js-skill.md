@@ -61,7 +61,7 @@ const isMobile =
 当正则表达式开启 `g`、`y`模式的时候会记录 lastIndex 的值，每次匹配都从 lastIndex 开始匹配，所以会导致匹配不准，因此需要重新设置 lastIndex 的值
 :::
 
-::: normal-demo 合成事件
+::: normal-demo 正则表达式 lastIndex 的 技巧
 
 ```html
 密码校验: <input id="inp" /> <span id="tip"></span>
@@ -82,3 +82,5 @@ input.oninput = change = (e) => {
 ```
 
 :::
+
+
