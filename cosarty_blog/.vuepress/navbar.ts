@@ -29,7 +29,7 @@ export default navbar([
       'scss',
       'nestjs-frame',
       'vite-plugin',
-      'npm-publish-guide',
+      'npm-common-packge',
       'nginx',
     ],
   },
