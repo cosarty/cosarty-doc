@@ -41,7 +41,7 @@ export default navbar([
   {
     text: '杂七杂八',
     prefix: '/doc/essay/mixed/',
-    children: ['mobile', 'js-skill','css-skill'],
+    children: ['mobile', 'js-skill','css-skill','css-specific'],
   },
   {
     text: '关于',
