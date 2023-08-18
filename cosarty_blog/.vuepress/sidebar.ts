@@ -11,7 +11,7 @@ export default sidebar({
   ],
 
   '/doc/essay/npm-common-packge': 'structure',
-  '/doc/essay/mixed': ['mobile', 'js-skill','css-skill'],
+  '/doc/essay/mixed': ['mobile', 'js-skill','css-skill','css-specific'],
   '/doc/essay/handbook': 'structure',
   '/doc/interview': [
     {

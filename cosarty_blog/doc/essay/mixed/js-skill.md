@@ -83,4 +83,58 @@ input.oninput = change = (e) => {
 
 :::
 
+## elementUI table组件多列排序高亮
+
+::: tip
+我们在使用elementUI的使用会发现排序的时候只能够，排序一列或者排序的高亮箭头只能高亮一个
+主要是靠header-cell-style和sort-change ，通过将sortable设置为custom，来自定义排序
+:::
+
+::: normal-demo 排序高亮
+
+```html
+ <!-- 商品的表格 -->
+    <el-table
+      :data="compData"
+      :row-key="($event) => $event.goodsId"
+      style="width: 100%"
+      @sort-change="onSortChange"
+      :header-cell-style="handleTheadStyle"
+    >
+     <el-table-column prop="totalSoldCountShow" label="总销售量" width="130" sortable="custom">
+          <template #default="{ row }">
+            <span>
+              {{ row.extra.sales[filterObj.radio].totalSoldCountShow }}
+            </span>
+          </template>
+        </el-table-column>
+    </el-table>
+```
+
+```js
+export default {
+  data(){
+    return {
+        filterObj: {
+          totalSoldCountShow: null,
+      },
+    }
+  },
+  methods:{
+    // 记录排序规则   ascending 升 descending 降序
+    onSortChange({ order, prop }) {
+      this.filterObj[prop] = order;
+    },
+    // 多箭头高亮
+    handleTheadStyle({ column }) {
+      if (this.filterObj[column.property]) {
+        column.order = this.filterObj[column.property];
+      }
+    },
+  }
+}
+```
+
+:::
+
 
