@@ -9,7 +9,7 @@ export default navbar([
     children: [
       {
         text: 'vue',
-        link: 'vue/vite-framework',
+        link: 'vue/20230107-vite-framework',
       },
       {
         text: 'react',
@@ -31,6 +31,7 @@ export default navbar([
       'vite-plugin',
       'npm-common-packge',
       'nginx',
+      'vueuse'
     ],
   },
   {

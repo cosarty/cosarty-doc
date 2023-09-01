@@ -59,7 +59,7 @@ export default hopeTheme({
   plugins: {
     blog: {
       // autoExcerpt: true,
-      excerptLength:0,
+      excerptLength: 0,
       filter: (page) =>
         NOTES_PASS.some((reg) => reg.test(page.filePathRelative || '')) &&
         !page.frontmatter.home,
@@ -84,6 +84,7 @@ export default hopeTheme({
       tabs: true,
       codetabs: true,
       demo: true,
+      vuePlayground: true,
     },
     photoSwipe: {},
   },

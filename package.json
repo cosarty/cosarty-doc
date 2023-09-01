@@ -16,5 +16,8 @@
     "vuepress": "2.0.0-beta.62",
     "vuepress-plugin-search-pro": "2.0.0-beta.212",
     "vuepress-theme-hope": "2.0.0-beta.212"
+  },
+  "dependencies": {
+    "@vueuse/core": "^10.4.1"
   }
 }
