@@ -5,4 +5,5 @@ const cwd = process.cwd
 export const NOTES_PASS = [
   /^posts\/.*\.md/,
   /20230901-使用effectScope实现跨组件全局共享数据/,
+  /20230904-ResizeObserver/
 ]

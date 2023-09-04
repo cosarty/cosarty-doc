@@ -7,7 +7,19 @@ export default sidebar({
     'life-cycle',
     '20230902-常用hook',
   ],
-  '/doc/essay/mixed': ['mobile', 'js-skill', 'css-skill', 'css-specific'],
+  '/doc/essay/mixed': [
+    'mobile',
+    'js-skill',
+    'css-skill',
+    'css-specific',
+
+    {
+      link: 'js-check-for-gaps/20230904-ResizeObserver',
+      text: 'js 查缺补漏',
+    },
+  ],
+  // 重新开一行是为了重新渲染侧边栏
+  '/doc/essay/mixed/js-check-for-gaps': 'structure',
   '/doc/essay/handbook': 'structure',
   '/doc/interview': [
     {

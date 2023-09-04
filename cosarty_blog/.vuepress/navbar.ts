@@ -42,7 +42,10 @@ export default navbar([
   {
     text: '杂七杂八',
     prefix: '/doc/essay/mixed/',
-    children: ['mobile', 'js-skill','css-skill','css-specific'],
+    children: ['mobile', 'js-skill', 'css-skill', 'css-specific', {
+      link: 'js-check-for-gaps/20230904-ResizeObserver',
+      text:'js 查缺补漏'
+    }],
   },
   {
     text: '关于',
