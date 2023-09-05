@@ -8,11 +8,11 @@ heroImage: /cxn.png
 heroText: 集装箱
 heroFullScreen: true
 tagline: 遇见都是天意,拥有都是幸运,世界上的一千种等待,最好的叫做未来可期....
-# projects:
-#   - icon: project
-#     name: 项目名称
-#     desc: 项目详细描述
-#     link: https://你的项目链接
+projects:
+  - icon: project
+    name: 试题君
+    desc: 一个答题论坛
+    link: https://github.com/cosarty/yourdocument
 
 #   - icon: link
 #     name: 链接名称
