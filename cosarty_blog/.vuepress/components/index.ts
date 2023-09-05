@@ -1,3 +1,3 @@
-import About from './About.vue'
+import About from './About/About.vue'
 
 export default [About]
