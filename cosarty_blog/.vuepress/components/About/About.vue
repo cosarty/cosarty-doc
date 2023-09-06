@@ -14,8 +14,6 @@
 </template>
 
 <script lang="ts" setup>
-
-
 import Info from './components/Info.vue'
 import Case from './components/Case.vue'
 import Educational from './components/Educational.vue'
@@ -25,10 +23,7 @@ import Project from './components/Project.vue'
 defineOptions({ name: 'About' })
 </script>
 
-
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="scss" scoped>
 .profile {
@@ -37,8 +32,8 @@ defineOptions({ name: 'About' })
     margin: 0 auto;
     box-shadow: 0 3px 5px #ccc, 0 -3px 5px #ccc, -3px 0 5px #ccc, 3px 0 5px #ccc;
     padding: 16px;
-
-    @media screen and (max-width:650px) {
+    overflow: hidden;
+    @media screen and (max-width: 650px) {
       padding: 6px;
     }
   }
@@ -51,7 +46,6 @@ defineOptions({ name: 'About' })
     font-weight: 700;
   }
 }
-
 
 .mb-15 {
   margin-bottom: 15px;

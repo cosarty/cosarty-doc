@@ -1,8 +1,13 @@
 <template>
   <div class="profile-info">
     <div class="profile-content">
-      <div class="profile-items" v-for="({ text, value }, key) in infoList" :key="key">
-        <div class="text">{{ text }}</div>：
+      <div
+        class="profile-items"
+        v-for="({ text, value }, key) in infoList"
+        :key="key"
+      >
+        <div class="text">{{ text }}</div>
+        ：
         <div class="value">
           <template v-if="!value.startsWith('http')">{{ value }}</template>
           <template v-else>
@@ -11,7 +16,9 @@
         </div>
       </div>
     </div>
-    <div class="profile-avatar"></div>
+    <div class="profile-avatar">
+      <img src="/46b9869c9c26891e.jpg" />
+    </div>
   </div>
 </template>
 
@@ -29,7 +36,7 @@ interface ProFileInfoImp {
   address: string //住址
   post: string //职位
   home: string // 主页
-  github: string // 
+  github: string //
 }
 
 type ParcodeInfo<T extends Record<string, any>> = {
@@ -84,9 +91,8 @@ const infoList = reactive<ParcodeInfo<ProFileInfoImp>>({
     margin: 30px 0 0;
     display: flex;
 
-    @media screen and (max-width:650px) {
+    @media screen and (max-width: 650px) {
       flex-direction: column-reverse;
-
     }
   }
 
@@ -100,10 +106,9 @@ const infoList = reactive<ParcodeInfo<ProFileInfoImp>>({
     row-gap: 13px;
     padding: 0 20px;
 
-    @media screen and (max-width:650px) {
+    @media screen and (max-width: 650px) {
       max-height: max-content;
       padding: 0 5px;
-
     }
   }
 
@@ -116,15 +121,12 @@ const infoList = reactive<ParcodeInfo<ProFileInfoImp>>({
       font-weight: 700;
       text-align: justify;
 
-
       &::after {
         content: '';
         display: inline-block;
         width: 100%;
         margin-top: -20px;
         height: 10px;
-
-
       }
     }
 
@@ -136,12 +138,16 @@ const infoList = reactive<ParcodeInfo<ProFileInfoImp>>({
   &-avatar {
     width: 150px;
     height: 230px;
-    background-image: linear-gradient(to right, blue, yellow, pink);
-
-    @media screen and (max-width:650px) {
+    // background-image: linear-gradient(to right, blue, yellow, pink);
+    // background-image: linear-gradient(to right, blue, yellow, pink);
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    @media screen and (max-width: 650px) {
       align-self: center;
       margin-bottom: 25px;
-
     }
   }
 }
