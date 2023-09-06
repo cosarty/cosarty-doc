@@ -158,6 +158,9 @@ const infoList = reactive<ProjectImp[]>([
 </script>
 
 <style lang="scss" scoped>
+a {
+  word-break: break-all;
+}
 .project {
   &-container {
   }
@@ -204,14 +207,16 @@ const infoList = reactive<ProjectImp[]>([
         padding-left: 15px;
       }
 
-      &::before {
-        position: absolute;
-        content: '';
-        width: 6px;
-        height: 1px;
-        right: calc(100% - 50px);
-        top: 12px;
-        background-color: #414141;
+      @media screen and (min-width: 650px) {
+        &::before {
+          position: absolute;
+          content: '';
+          width: 6px;
+          height: 1px;
+          right: calc(100% - 50px);
+          top: 12px;
+          background-color: #414141;
+        }
       }
 
       .arr {

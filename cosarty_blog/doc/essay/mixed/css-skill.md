@@ -149,9 +149,40 @@ aspect-ratio: auto; // 保持原有的纵横比
 
 ```css
 .panel-title {
-  background:  linear-gradient(to right, rgb(255, 0, 0) 0%, rgba(0, 0, 255, .8) 50%, rgb(128, 0, 128) 80%);
+  background: linear-gradient(
+    to right,
+    rgb(255, 0, 0) 0%,
+    rgba(0, 0, 255, 0.8) 50%,
+    rgb(128, 0, 128) 80%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+```
+
+:::
+
+## 文本双端对齐
+
+::: normal-demo 文本双端对齐
+
+```html
+<div class="text">首页</div>
+```
+
+```css
+.text {
+  width: 90px;
+  font-weight: 700;
+  text-align: justify;
+  border: 1px solid #ccc;
+}
+.text::after {
+  content: '';
+  display: inline-block;
+  width: 100%;
+  margin-top: -20px;
+  height: 10px;
 }
 ```
 
