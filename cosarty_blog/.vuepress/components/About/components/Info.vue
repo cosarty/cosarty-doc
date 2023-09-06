@@ -1,7 +1,5 @@
 <template>
   <div class="profile-info">
-
-
     <div class="profile-content">
       <div class="profile-items" v-for="({ text, value }, key) in infoList" :key="key">
         <div class="text">{{ text }}</div>：
@@ -86,6 +84,10 @@ const infoList = reactive<ParcodeInfo<ProFileInfoImp>>({
     margin: 30px 0 0;
     display: flex;
 
+    @media screen and (max-width:650px) {
+      flex-direction: column-reverse;
+
+    }
   }
 
   &-content {
@@ -97,6 +99,12 @@ const infoList = reactive<ParcodeInfo<ProFileInfoImp>>({
     justify-content: space-between;
     row-gap: 13px;
     padding: 0 20px;
+
+    @media screen and (max-width:650px) {
+      max-height: max-content;
+      padding: 0 5px;
+
+    }
   }
 
   &-items {
@@ -129,6 +137,12 @@ const infoList = reactive<ParcodeInfo<ProFileInfoImp>>({
     width: 150px;
     height: 230px;
     background-image: linear-gradient(to right, blue, yellow, pink);
+
+    @media screen and (max-width:650px) {
+      align-self: center;
+      margin-bottom: 25px;
+
+    }
   }
 }
 </style>

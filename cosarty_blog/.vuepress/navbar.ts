@@ -31,6 +31,7 @@ export default navbar([
       'vite-plugin',
       'npm-common-packge',
       'nginx',
+      'linux-book'
 
     ],
   },

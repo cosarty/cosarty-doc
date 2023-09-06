@@ -3,9 +3,13 @@
     <div class="profile-header">个人简历</div>
     <Info />
     <Case>教育背景</Case>
+    <Educational class="mb-15" />
     <Case>个人总结</Case>
+    <Sumup class="mb-15" />
     <Case>工作经历</Case>
+    <Work class="mb-15" />
     <Case>项目经历</Case>
+    <Project class="mb-15" />
   </div>
 </template>
 
@@ -14,6 +18,10 @@
 
 import Info from './components/Info.vue'
 import Case from './components/Case.vue'
+import Educational from './components/Educational.vue'
+import Sumup from './components/Sumup.vue'
+import Work from './components/Work.vue'
+import Project from './components/Project.vue'
 defineOptions({ name: 'About' })
 </script>
 
@@ -42,5 +50,10 @@ defineOptions({ name: 'About' })
     line-height: 2.1;
     font-weight: 700;
   }
+}
+
+
+.mb-15 {
+  margin-bottom: 15px;
 }
 </style>
