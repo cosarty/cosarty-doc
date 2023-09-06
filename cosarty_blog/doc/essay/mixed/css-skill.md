@@ -162,7 +162,7 @@ aspect-ratio: auto; // 保持原有的纵横比
 
 :::
 
-## 文本双端对齐
+## text-align: justify 文本双端对齐
 
 ::: normal-demo 文本双端对齐
 
