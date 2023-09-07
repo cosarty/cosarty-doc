@@ -19,18 +19,23 @@ interface WorkImp {
 
 const info = reactive<WorkImp[]>([
   {
-    range: '2023-06至 2023-09',
+    range: '2023-06至2023-09',
     title: '福建大娱号信息股份有限公司',
     specialty: '前端开发工程师',
   },
   {
-    range: '2022-06至2023-05',
+    range: '2023-01至2023-06',
     title: '思飞信息技术有限公司',
     specialty: '前端开发工程师',
   },
   {
-    range: '2021-07至2021-12',
+    range: '2022-07至2022-12',
     title: '锐捷网络股份有限公司',
+    specialty: '前端开发实习',
+  },
+  {
+    range: '2021-04至2021-09',
+    title: '思飞信息技术有限公司',
     specialty: '前端开发实习',
   },
 ])

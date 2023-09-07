@@ -18,7 +18,7 @@ interface EducationalImp {
   specialty: string
 }
 
-const info = reactive<EducationalImp[]>([{ range: '2018.09-2022.06', title: '福州大学至诚学院', specialty: '计算机科学与技术' }])
+const info = reactive<EducationalImp[]>([{ range: '2019.09-2023.06', title: '福州大学至诚学院', specialty: '计算机科学与技术' }])
 </script>
 
 <style scoped lang="scss">
