@@ -16,3 +16,20 @@
 
 （6）数组和对象都可以使用for...in 循环
 
+
+## 什么时候`Object.prototype.toString`会无效
+
+当对象上设置了`Symbol.toStringTag`的时候会无效
+
+```js
+    const arr = []
+    const obj = {
+      [Symbol.toStringTag]: 'Array'
+    }
+    const num = new Number(23)
+    num[Symbol.toStringTag] = 'HHHH'
+    console.log(Object.prototype.toString.call(arr))  //[object Array]
+    console.log(Object.prototype.toString.call(obj)) //[object Array]
+    console.log(Object.prototype.toString.call(num)) //[object HHH]
+```
+
