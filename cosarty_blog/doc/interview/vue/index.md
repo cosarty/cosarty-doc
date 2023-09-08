@@ -8,3 +8,7 @@
 
 （1） Vue.observable()
 （2）Vue.$set()
+
+## vue2里面 setup 和 data 的优先级
+
+`setup`优先级高于`data`，如果存在同名属性则有限取`setup`
