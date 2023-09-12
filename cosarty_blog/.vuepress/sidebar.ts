@@ -42,5 +42,9 @@ export default sidebar({
       text: 'vue',
       link: 'vue',
     },
+    {
+      text: 'ts',
+      link: 'ts',
+    },
   ],
 })

@@ -8,3 +8,4 @@
  - [javascript](./javascript/index.md)
  - [react](./react/index.md)
  - [vue](./vue/index.md)
+ - [ts](./ts/index.md)
