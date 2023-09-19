@@ -33,3 +33,9 @@
     console.log(Object.prototype.toString.call(num)) //[object HHH]
 ```
 
+## js里面如何判断对象为空
+
+ - 1. 如果没有Symbol key的情况下可以使用 `Object.keys`
+ - 2. 使用`Reflect.ownKeys` 判断
+ - 3. 使用 `Object.getOwnPropertyNames` 和 `Object.getOwnPropertySymbols`
+
