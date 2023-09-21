@@ -388,6 +388,74 @@ $values: #ff0000, #00ff00, #0000ff;
 }
 ```
 
+## 继承
+
+scss 里面的继承是通过 `@extend`来实现，那`@extend`和`@mixin`有什么区别呢，首先`@mixin`的含义是混入也就是用几次`@mixin`就相当于复制了几次 css 代码注入到指定位置，而`@extend`则是将不同样式之间的相同之处提取出来，需要的时候直接引用，可以控制使其是否生成代码
+
+- 基本用法
+
+  例：
+
+```scss
+.alert {
+  padding: 15px;
+  margin-bottom: 20px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.alert-info {
+  @extend .alert;
+  color: #31708f;
+  background-color: #d9edf7;
+  border-color: #bce8f1;
+}
+
+.alert-success {
+  @extend .alert;
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+}
+```
+
+```scss
+.alert-danger {
+  @extend .alert;
+  @extend .important;
+  color: #a94442;
+  background-color: #f2dede;
+  border-color: #ebccd1;
+}
+```
+
+- 占位符用%
+你可能发现被继承的css父类并没有被实际应用，也就是说html代码中没有使用该类，它的唯一目的就是扩展其他选择器。
+
+对于该类，可能不希望被编译输出到最终的css文件中，它只会增加CSS文件的大小，永远不会被使用。
+
+这就是占位符选择器的作用。
+
+```scss
+%alert {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    font-size: 12px;
+}
+ 
+.alert-info {
+    @extend %alert;
+    color: #31708f;
+    background-color: #d9edf7;
+    border-color: #bce8f1;
+}
+
+```
+
+
 ## 插值语句 `#{}`
 
 通过 `#{}` 插值语句可以在选择器或属性名中使用变量：
