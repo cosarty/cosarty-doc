@@ -2,6 +2,7 @@ import { sidebar } from 'vuepress-theme-hope'
 
 export default sidebar({
   '/doc/framework/vue': 'structure',
+  '/doc/framework/nodejs': 'structure',
   '/doc/framework/react': [
     'immer不可变数据',
     'life-cycle',
