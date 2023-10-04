@@ -76,7 +76,7 @@ const infoList = reactive<ParcodeInfo<ProFileInfoImp>>({
   },
   home: {
     text: '主页',
-    value: 'http://cosarty.com',
+    value: 'http://cosarty.cn',
   },
   github: {
     text: 'github首页',
