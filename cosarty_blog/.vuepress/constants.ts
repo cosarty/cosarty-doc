@@ -6,5 +6,6 @@ export const NOTES_PASS = [
   /^posts\/.*\.md/,
   /20230901-使用effectScope实现跨组件全局共享数据/,
   /20230904-ResizeObserver/,
-  /20230904-IntersectionObserver/
+  /20230904-IntersectionObserver/,
+  /20231004-常用的正则表达式/
 ]

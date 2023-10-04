@@ -29,7 +29,6 @@ const list = reactive([
     display: flex;
     align-items: start;
     font-size: 14px;
-
     &::before {
       content: '';
       display: block;
