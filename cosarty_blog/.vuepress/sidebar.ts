@@ -10,7 +10,7 @@ export default sidebar({
   ],
   '/doc/essay/mixed': [
     'mobile',
-    'js-skill',
+    // 'js-skill',
     'css-skill',
     'css-specific',
 
