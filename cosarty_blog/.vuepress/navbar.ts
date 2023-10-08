@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: Andy
+ * @Date: 2023-06-08 21:44:21
+ * @LastEditors: Andy
+ * @LastEditTime: 2023-10-08 21:42:01
+ */
 import { navbar } from 'vuepress-theme-hope'
 
 export default navbar([
@@ -35,8 +43,8 @@ export default navbar([
       'vite-plugin',
       'npm-common-packge',
       'nginx',
-      'linux-book'
-
+      'linux-book',
+      'git-review',
     ],
   },
   {
@@ -47,10 +55,15 @@ export default navbar([
   {
     text: '杂七杂八',
     prefix: '/doc/essay/mixed/',
-    children: ['mobile',  'css-skill', 'css-specific', {
-      link: 'js-check-for-gaps/20230904-ResizeObserver',
-      text:'js 查缺补漏'
-    }],
+    children: [
+      'mobile',
+      'css-skill',
+      'css-specific',
+      {
+        link: 'js-check-for-gaps/20230904-ResizeObserver',
+        text: 'js 查缺补漏',
+      },
+    ],
   },
   {
     text: '关于',

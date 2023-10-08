@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: Andy
+ * @Date: 2023-06-08 21:44:21
+ * @LastEditors: Andy
+ * @LastEditTime: 2023-10-08 21:41:37
+ */
 import { sidebar } from 'vuepress-theme-hope'
 
 export default sidebar({
