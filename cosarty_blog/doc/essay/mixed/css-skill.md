@@ -187,3 +187,52 @@ aspect-ratio: auto; // 保持原有的纵横比
 ```
 
 :::
+
+## filter: drop-shadow 文本双端对齐
+
+::: normal-demo 文本双端对齐
+
+```html
+
+<h3>
+  filter: drop-shadow
+</h3>
+<div class="box drop-shadow">
+    <i class="cor"></i>
+    filter: drop-shadow
+  </div>
+<h3>
+  filter: box-shadow
+  
+</h3>
+<div class="box box-shadow">
+    <i class="cor"></i>
+    filte
+```
+
+```css
+.box {
+  margin: 40px; padding: 50px;
+  background-color: #fff;
+  position: relative;
+  font-size: 24px;
+}
+.cor {
+  position: absolute;
+  left: -40px;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  border: 20px solid transparent;
+  border-right-color: #fff;
+}
+.drop-shadow {
+  filter: drop-shadow(5px 5px 5px black);
+}
+.box-shadow{
+   box-shadow:5px 5px 5px black;
+}
+
+```
+
+:::

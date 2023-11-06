@@ -27,7 +27,7 @@ const list = reactive([
 .sumup-container {
   .sumup-items {
     display: flex;
-    align-items: start;
+    align-items: flex-start;
     font-size: 14px;
     &::before {
       content: '';
