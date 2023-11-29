@@ -10,14 +10,15 @@
     "dev": "npm run docs:clean-dev"
   },
   "devDependencies": {
-    "@vuepress/client": "2.0.0-beta.62",
-    "@vuepress/plugin-docsearch": "2.0.0-beta.62",
-    "vue": "^3.3.4",
-    "vuepress": "2.0.0-beta.62",
-    "vuepress-plugin-search-pro": "2.0.0-beta.212",
-    "vuepress-theme-hope": "2.0.0-beta.212"
+    "@vuepress/bundler-vite": "2.0.0-rc.0",
+    "@vuepress/client": "2.0.0-rc.0",
+    "@vuepress/plugin-docsearch": "2.0.0-rc.0",
+    "vue": "^3.3.9",
+    "vuepress": "2.0.0-rc.0",
+    "vuepress-plugin-search-pro": "2.0.0-rc.1",
+    "vuepress-theme-hope": "2.0.0-rc.1"
   },
   "dependencies": {
-    "@vueuse/core": "^10.4.1"
+    "@vueuse/core": "^10.6.1"
   }
 }

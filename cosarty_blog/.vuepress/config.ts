@@ -1,8 +1,9 @@
 import { defineUserConfig } from 'vuepress'
 import theme from './theme.js'
-import { docsearchPlugin } from '@vuepress/plugin-docsearch'
+// import { docsearchPlugin } from '@vuepress/plugin-docsearch'
 import { searchProPlugin } from "vuepress-plugin-search-pro";
-import { blog } from 'vuepress-theme-hope';
+// import { blog } from 'vuepress-theme-hope';
+import { viteBundler } from "@vuepress/bundler-vite"
 export default defineUserConfig({
   lang: 'zh-CN',
   title: 'cosarty',
@@ -32,4 +33,8 @@ export default defineUserConfig({
       ],
     }),
   ],
+  bundler: viteBundler({
+    viteOptions: {},
+    vuePluginOptions: {},
+  }),
 })
