@@ -38,7 +38,7 @@ export default sidebar({
     'linux-book',
     'git-review',
     {
-      link: 'tailwindcss/setup',
+      link: 'tailwindcss/1.setup',
       text: 'tailwindcss',
     },
   ],

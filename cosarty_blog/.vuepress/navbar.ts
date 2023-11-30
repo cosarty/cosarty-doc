@@ -46,7 +46,7 @@ export default navbar([
       'linux-book',
       'git-review',
       {
-        link: 'tailwindcss/setup.md',
+        link: 'tailwindcss/1.setup.md',
         text: 'tailwindcss',
       },
     ],
