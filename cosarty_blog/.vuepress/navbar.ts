@@ -1,6 +1,6 @@
 /*
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: Andy
  * @Date: 2023-06-08 21:44:21
  * @LastEditors: Andy
@@ -45,6 +45,10 @@ export default navbar([
       'nginx',
       'linux-book',
       'git-review',
+      {
+        link: 'tailwindcss/setup.md',
+        text: 'tailwindcss',
+      },
     ],
   },
   {

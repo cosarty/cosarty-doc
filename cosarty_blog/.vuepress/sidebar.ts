@@ -1,6 +1,6 @@
 /*
- * @Descripttion: 
- * @version: 
+ * @Descripttion:
+ * @version:
  * @Author: Andy
  * @Date: 2023-06-08 21:44:21
  * @LastEditors: Andy
@@ -29,7 +29,21 @@ export default sidebar({
   ],
   // 重新开一行是为了重新渲染侧边栏
   '/doc/essay/mixed/js-check-for-gaps': 'structure',
-  '/doc/essay/handbook': 'structure',
+  '/doc/essay/handbook': [
+    'scss',
+    'nestjs-frame',
+    'vite-plugin',
+    'npm-common-packge',
+    'nginx',
+    'linux-book',
+    'git-review',
+    {
+      link: 'tailwindcss/setup',
+      text: 'tailwindcss',
+    },
+  ],
+   // 重新开一行是为了重新渲染侧边栏
+   '/doc/essay/handbook/tailwindcss': 'structure',
   '/doc/interview': [
     {
       text: 'css',
