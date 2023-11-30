@@ -43,7 +43,7 @@ export default sidebar({
     },
   ],
    // 重新开一行是为了重新渲染侧边栏
-   '/doc/essay/handbook/tailwindcss': 'structure',
+   '/doc/essay/handbook/tailwindcss': ['1.setup','2.pseudoClass'],
   '/doc/interview': [
     {
       text: 'css',
