@@ -1,9 +1,10 @@
-import { defineUserConfig } from 'vuepress'
+import { Plugin, defineUserConfig } from 'vuepress'
 import theme from './theme.js'
 // import { docsearchPlugin } from '@vuepress/plugin-docsearch'
 import { searchProPlugin } from 'vuepress-plugin-search-pro'
 // import { blog } from 'vuepress-theme-hope';
 import { viteBundler } from '@vuepress/bundler-vite'
+import type {PluginOption } from 'vite'
 export default defineUserConfig({
   lang: 'zh-CN',
   title: 'cosarty',
@@ -33,10 +34,19 @@ export default defineUserConfig({
     // }),
   ],
   bundler: viteBundler({
-    viteOptions: {},
+    viteOptions: {
+      plugins: [
+        // {
+        //   transformIndexHtml(row) {
+        //     console.log('row: ', row);
+        //     return row
+        //     }
+        // }as any 
+      ]
+    },
     vuePluginOptions: {},
   }),
   head: [
-    ['script', { src: '/tailwindcss.js' }],
+    // ['script', { src: '/tailwindcss.js' }],
   ],
 })
