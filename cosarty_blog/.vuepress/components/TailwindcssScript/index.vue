@@ -10,7 +10,7 @@ onMounted(() => {
   script.id = 'tailwindcss'
   script.src = '/tailwindcss.js'
   script.onload = ()=>{
-    console.log('完成')
+    console.log('tailwindcss.js挂载完成完成')
   }
 
   document.head.appendChild(script)
