@@ -1,7 +1,7 @@
 import { Plugin, defineUserConfig } from 'vuepress'
 import theme from './theme.js'
-// import { docsearchPlugin } from '@vuepress/plugin-docsearch'
-import { searchProPlugin } from 'vuepress-plugin-search-pro'
+import { docsearchPlugin } from '@vuepress/plugin-docsearch'
+// import { searchProPlugin } from 'vuepress-plugin-search-pro'
 // import { blog } from 'vuepress-theme-hope';
 import { viteBundler } from '@vuepress/bundler-vite'
 import type {PluginOption } from 'vite'
@@ -13,8 +13,15 @@ export default defineUserConfig({
   theme,
   shouldPrefetch: false,
   plugins: [
-    // docsearchPlugin({
-    // }),
+    docsearchPlugin({
+   
+      appId: 'BLZP92WBBB',
+
+      apiKey: 'a9ac9c2e8adbe10f84ef2e43eb76d7dd',
+  
+      indexName: 'cosarty',
+
+    }),
     // searchProPlugin({
     //   // 索引全部内容
     //   indexContent: true,
