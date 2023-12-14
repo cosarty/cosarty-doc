@@ -17,9 +17,10 @@ export default defineUserConfig({
    
       appId: 'BLZP92WBBB',
 
-      apiKey: 'a9ac9c2e8adbe10f84ef2e43eb76d7dd',
+      apiKey: '13507d15ae775ecb848d0d5ff986b34a',
   
       indexName: 'cosarty',
+      // 13507d15ae775ecb848d0d5ff986b34a
 
     }),
     // searchProPlugin({
