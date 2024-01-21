@@ -50,11 +50,11 @@ export default hopeTheme({
     timeline: '时间轴',
   },
 
-  // encrypt: {
-  //   config: {
-  //     "/guide/encrypt.html": ["1234"],
-  //   },
-  // },
+  encrypt: {
+    config: {
+      '/posts/worksheet/collect.html': ['1398675906'],
+    },
+  },
 
   plugins: {
     blog: {

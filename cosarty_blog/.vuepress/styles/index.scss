@@ -2,26 +2,6 @@
   display: flex;
 }
 
-body {
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-weight: 500;
-    line-height: 1.25;
-    overflow-wrap: break-word;
-  }
-
-  ol,
-  ul,
-  menu {
-    list-style: inherit;
-    margin: initial;
-    padding: inherit;
-  }
-}
 
 :root{
   --sidebar-width:24rem;

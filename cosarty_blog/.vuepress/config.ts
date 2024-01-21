@@ -12,6 +12,7 @@ export default defineUserConfig({
   base: '/',
   theme,
   shouldPrefetch: false,
+  
   plugins: [
     docsearchPlugin({
    
