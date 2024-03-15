@@ -236,3 +236,23 @@ aspect-ratio: auto; // 保持原有的纵横比
 ```
 
 :::
+
+
+##  will-change  动效优化属性
+
+- will-change属性的值
+
+  - auto 表示没有明确的意图; 无论是启发式和最优化，用户代理应该应用都和正常情况相同
+
+  - scroll-position 表示开发者期望去在接下来去改变或者有动画应用元素的滚动位置
+
+  - contents 表示开发者期望去在接下来去改变或者有动画应用元素的内容
+
+  - 用来排除关键字 will-change, none, all, auto, scroll-position, and contents, 从之外增加一些通用的关键字
+
+
+>will-change： transform：<br/>
+>will-change： opacity：<br/>
+>will-change： top, left, bottom, right：
+
+
