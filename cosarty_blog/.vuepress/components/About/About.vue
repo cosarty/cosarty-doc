@@ -2,7 +2,7 @@
   <div class="profile-wrapper">
     <div class="profile-header">个人简历</div>
     <Info />
-    <Case>教育背景</Case>
+    <Case>教育背景 </Case>
     <Educational class="mb-15" />
     <Case>个人总结</Case>
     <Sumup class="mb-15" />
