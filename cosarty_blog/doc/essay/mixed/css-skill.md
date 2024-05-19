@@ -256,3 +256,13 @@ aspect-ratio: auto; // 保持原有的纵横比
 >will-change： top, left, bottom, right：
 
 
+##  -webkit-app-region 设置属性拖动
+
+```css
+html{
+  -webkit-app-region:drag;
+}
+textarea{
+  -webkit-app-region:no-drag;
+}
+```

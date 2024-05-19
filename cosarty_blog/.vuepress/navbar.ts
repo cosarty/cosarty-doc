@@ -49,6 +49,14 @@ export default navbar([
         link: 'tailwindcss/1.setup.md',
         text: 'tailwindcss',
       },
+      {
+        link: 'nextjs/1.setup.md',
+        text: 'nextjs',
+      },
+      {
+        link: 'electron/1.setup.md',
+        text: 'electron',
+      },
     ],
   },
   {

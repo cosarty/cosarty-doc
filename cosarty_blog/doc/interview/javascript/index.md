@@ -39,3 +39,7 @@
  - 2. 使用`Reflect.ownKeys` 判断
  - 3. 使用 `Object.getOwnPropertyNames` 和 `Object.getOwnPropertySymbols`
 
+
+## 如何将字符串类型的’false‘ 转换为 boolean类型的false
+
+> JSON.parse('false')

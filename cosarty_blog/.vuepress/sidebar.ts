@@ -41,9 +41,19 @@ export default sidebar({
       link: 'tailwindcss/1.setup',
       text: 'tailwindcss',
     },
+    {
+      link: 'nextjs/1.setup',
+      text: 'nextjs',
+    },
   ],
-   // 重新开一行是为了重新渲染侧边栏
-   '/doc/essay/handbook/tailwindcss': ['1.setup','2.pseudoClass','3.responsive'],
+  // 重新开一行是为了重新渲染侧边栏
+  '/doc/essay/handbook/tailwindcss': [
+    '1.setup',
+    '2.pseudoClass',
+    '3.responsive',
+  ],
+  '/doc/essay/handbook/nextjs': ['1.setup'],
+  '/doc/essay/handbook/electron': ['1.setup'],
   '/doc/interview': [
     {
       text: 'css',
