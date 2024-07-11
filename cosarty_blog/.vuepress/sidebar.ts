@@ -45,6 +45,7 @@ export default sidebar({
       link: 'nextjs/1.setup',
       text: 'nextjs',
     },
+    "swc"
   ],
   // 重新开一行是为了重新渲染侧边栏
   '/doc/essay/handbook/tailwindcss': [

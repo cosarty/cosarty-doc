@@ -58,4 +58,9 @@ export default defineUserConfig({
   head: [
     // ['script', { src: '/tailwindcss.js' }],
   ],
+  markdown:{
+    headers:{
+      level:[2,3,4]
+    }
+  }
 })

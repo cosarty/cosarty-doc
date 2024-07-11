@@ -57,6 +57,7 @@ export default navbar([
         link: 'electron/1.setup.md',
         text: 'electron',
       },
+      'swc',
     ],
   },
   {
