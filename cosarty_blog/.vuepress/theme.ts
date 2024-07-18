@@ -43,7 +43,8 @@ export default hopeTheme({
 
   blog: {
     description: '一个前端开发者',
-    intro: '/about',
+    // intro: '/about',
+    intro: '/',
     medias: {
       Email: '1398675906@qq.com',
     },

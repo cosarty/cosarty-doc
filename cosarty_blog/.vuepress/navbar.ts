@@ -58,6 +58,7 @@ export default navbar([
         text: 'electron',
       },
       'swc',
+      'esbuild'
     ],
   },
   {
@@ -78,9 +79,9 @@ export default navbar([
       },
     ],
   },
-  {
-    text: '关于',
-    icon: 'people',
-    link: '/about/',
-  },
+  // {
+  //   text: '关于',
+  //   icon: 'people',
+  //   link: '/about/',
+  // },
 ])
