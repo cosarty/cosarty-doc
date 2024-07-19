@@ -118,26 +118,6 @@ for (let i = 0; i < 5; i++) {
 
 完成上下文对象后，您可以在上下文上调用 `dispose()` 以等待现有构建完成、停止监视和/或服务模式并释放资源。
 
-### 配置
-
-- General options
-  - [Bundle](#bundle)
-  - [Cancel ](#cancel )
-  - [Live reload](#live-reload)
-  - [Platform](#platform)
-  - [Rebuild](#rebuild)
-  - [Server](#server)
-  - [Tsconfig](#tsconfig)
-  - [Tsconfig raw](#tsconfig-raw)
-- Input
-  - [Entry points](#entry-points )
-  - [Loader](#loader)
-  - [Stdin](#stdin) 
-- Output contents
-  - 
-
-
-
 ## Transform API
 
 把code转成字符串而不是写入文件中
@@ -153,8 +133,6 @@ console.log(result)
 ```
 
 > 对于某些用例，采用字符串而不是文件作为输入更符合人体工程学。文件系统隔离具有某些优点（例如，在浏览器中工作，不受附近 `package.json` 文件的影响）和某些缺点（例如，不能与捆绑或插件一起使用）。如果您的用例不适合转换 API，那么您应该使用更通用的构建 API。
-
-### 配置
 
 ## Options
 
@@ -823,3 +801,551 @@ await esbuild.build({
 - 这意味着 `--external:@foo/bar` 隐式也意味着与导入路径 `@foo/bar/baz` 匹配的 `--external:@foo/bar/*` 。因此它也将 `@foo/bar` 包内的所有路径标记为外部路径。
 - 路径解析结束后，将针对所有看起来不像包路径的外部路径（即以 `/` 或 `./` 或 `../` 通配符）。
 - 这意味着您可以使用 `--external:./dir/*` 将目录 `dir` 中的所有内容标记为外部。请注意，前导 `./` 很重要。使用 `--external:dir/*` 会被视为包路径，并且在路径解析结束后不会进行检查。
+
+#### Main fields
+
+当您在节点中导入包时，该包的 `package.json` 文件中的 `main` 字段决定导入哪个文件（以及许多其他规则）。包括 esbuild 在内的主要 JavaScript 捆绑程序允许您在解析包时指定要尝试的附加 `package.json` 字段。至少有三个常用的字段：
+
+- main
+- module
+- browser
+
+默认主要字段取决于当前平台设置。这些默认值应该与现有的包生态系统最广泛兼容。但如果您愿意，您可以像这样自定义它们：
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  mainFields: ['module', 'main'],
+  outfile: 'out.js',
+})
+```
+
+#### For package authors
+
+如果您想编写一个使用 `browser` 字段与 `module` 字段组合的包，那么您可能需要填写完整的 CommonJS-vs- ESM中和浏览器与节点兼容性矩阵。为此，您需要使用 `browser` 字段的扩展形式，即地图而不仅仅是字符串：
+
+```js
+{
+  "main": "./node-cjs.js",
+  "module": "./node-esm.js",
+  "browser": {
+    "./node-cjs.js": "./browser-cjs.js",
+    "./node-esm.js": "./browser-esm.js"
+  }
+}
+```
+
+请注意，使用 `main` 、 `module` 和 `browser` 是执行此操作的旧方法。还有一种您可能更喜欢使用的更新方法： `package.json` 中的 `exports` 字段。它提供了一组不同的权衡。例如，它可以让您更精确地控制包中所有子路径的导入（而 `main` 字段只能让您控制入口点），但它可能会导致您的包被多次导入取决于您如何配置它。
+
+#### Node paths
+
+Node 的模块解析算法支持名为 `NODE_PATH` 的环境变量，该变量包含解析导入路径时要使用的全局目录列表。除了所有父目录中的 `node_modules` 目录之外，还会在这些路径中搜索包。您可以使用 CLI 的环境变量以及 JS 和 Go API 的数组将此目录列表传递给 esbuild：
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  nodePaths: ['someDir'],
+  entryPoints: ['app.js'],
+  bundle: true,
+  outfile: 'out.js',
+})
+```
+
+#### Packages 
+
+使用此设置可以控制是否从捆绑包中排除所有包的依赖项。这在捆绑 Node 时很有用，因为许多 npm 包使用 esbuild 在捆绑时不支持的特定于节点的功能（例如 `__dirname` 、 `import.meta.url` 、 `fs.readFileSync` 和 `*.node` 本机二进制模块）。有两个可能的值：
+
+- bundle
+  - 这是默认值。这意味着允许捆绑包导入。请注意，此值并不意味着所有包都将被捆绑，只是允许它们捆绑。您仍然可以使用 external 从捆绑包中排除单个包。
+- external
+  - 这意味着所有包导入都被视为捆绑包的外部，并且不被捆绑。请注意，当您的捆绑包运行时，您的依赖项必须仍然存在于文件系统上。它与手动将每个依赖项传递给外部具有相同的效果，但更简洁。如果您想自定义哪些依赖项是外部的，哪些不是，那么您应该将其设置为 `bundle` ，然后对各个依赖项使用外部。
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  packages: 'external',
+})
+```
+
+#### Preserve symlinks
+
+此设置镜像节点中的 `--preserve-symlinks` 设置。如果您使用该设置（或 Webpack 中类似的 `resolve.symlinks` 设置），您可能也需要在 esbuild 中启用此设置。可以这样启用它：
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  preserveSymlinks: true,
+  outfile: 'out.js',
+})
+```
+
+#### Resolve extensions
+
+节点使用的解析算法支持隐式文件扩展名。您可以 `require('./file')` ，它会按顺序检查 `./file` 、 `./file.js` 、 `./file.json` 和 `./file.node` 。包括 esbuild 在内的现代捆绑程序也将此概念扩展到其他文件类型。 esbuild 中隐式文件扩展名的完整顺序可以使用解析扩展设置进行自定义，默认为 `.tsx,.ts,.jsx,.js,.css,.json` ：
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  resolveExtensions: ['.ts', '.js'],
+  outfile: 'out.js',
+})
+```
+
+请注意，esbuild 故意不在此列表中包含新的 `.mjs` 和 `.cjs` 扩展。 Node 的解析算法不会将这些视为隐式文件扩展名，因此 esbuild 也不会。如果要导入具有这些扩展名的文件，您应该在导入路径中显式添加扩展名，或者更改此设置以包含您想要隐式的其他扩展名。
+
+#### Working directory
+
+此 API 选项允许您指定用于构建的工作目录。它通常默认为您用来调用 esbuild 的 API 的进程的当前工作目录。 esbuild 将工作目录用于一些不同的事情，包括将作为 API 选项给出的相对路径解析为绝对路径，以及将绝对路径漂亮地打印为日志消息中的相对路径。以下是如何自定义 esbuild 的工作目录：
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['file.js'],
+  absWorkingDir: '/var/tmp/custom/working/directory',
+  outfile: 'out.js',
+})
+```
+
+### Transformation 
+
+#### JSX
+
+- transform
+  - 这告诉 esbuild 使用在许多使用 JSX 语法的库之间共享的通用转换将 JSX 转换为 JS。每个 JSX 元素都会转换为对 JSX 工厂函数的调用，并以该元素的组件（或用于片段的 JSX 片段）作为第一个参数。第二个参数是 props 数组（如果没有 props，则为 `null` ）。存在的任何子元素都会成为第二个参数之后的附加参数。
+- preserve
+  - 这会在输出中保留 JSX 语法，而不是将其转换为函数调用。 JSX 元素被视为一流语法，并且仍然受到其他设置（例如缩小和属性修饰）的影响。
+- automatic
+  - 这种转换是在 React 17+ 中引入的，并且是针对 React 的。它会自动从 JSX 导入源生成 `import` 语句，并引入许多有关如何处理语法的特殊情况。细节太复杂，无法在这里描述。有关更多信息，请阅读 React 关于新 JSX 转换的文档。如果您想启用此转换的开发模式版本，则需要另外启用 JSX 开发设置。
+
+```js
+import * as esbuild from 'esbuild'
+
+let result = await esbuild.transform('<div/>', {
+  jsx: 'preserve',
+  loader: 'jsx',
+})
+
+console.log(result.code)
+```
+
+#### JSX factory 
+
+这设置了为每个 JSX 元素调用的函数。通常 JSX 表达式如下所示：
+
+```html
+<div>Example text</div>
+```
+
+被编译成对 `React.createElement` 的函数调用，如下所示：
+
+```js
+React.createElement("div", null, "Example text");
+```
+
+您可以通过更改 JSX 工厂来调用 `React.createElement` 之外的其他内容。例如，调用函数 `h` （由 Preact 等其他库使用）：
+
+```js
+import * as esbuild from 'esbuild'
+
+let result = await esbuild.transform('<div/>', {
+  jsxFactory: 'h',
+  loader: 'jsx',
+})
+
+console.log(result.code)
+```
+
+或者，如果您使用 TypeScript，您只需将 JSX 添加到 `tsconfig.json` 文件中即可为 TypeScript 配置 JSX，esbuild 会自动选择它，而无需配置：
+
+```json
+{
+  "compilerOptions": {
+    "jsxFactory": "h"
+  }
+}
+```
+
+#### JSX fragment
+
+```js
+import * as esbuild from 'esbuild'
+
+let result = await esbuild.transform('<>x</>', {
+  jsxFragment: 'Fragment',
+  loader: 'jsx',
+})
+
+console.log(result.code)
+```
+
+#### JSX side effects
+
+默认情况下，esbuild 假定 JSX 表达式没有副作用，这意味着它们使用 `/* @__PURE__ */` 注释进行注释，并在捆绑过程中在不使用时将其删除。这遵循 JSX 用于虚拟 DOM 的常见用法，并适用于绝大多数 JSX 库。然而，有些人编写的 JSX 库不具有此属性（特别是 JSX 表达式可能具有任意副作用，并且在未使用时无法删除）。如果您正在使用这样的库，则可以使用此设置告诉 esbuild JSX 表达式有副作用：
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.jsx'],
+  outfile: 'out.js',
+  jsxSideEffects: true,
+})
+```
+
+#### Supported 
+
+此设置允许您在各个语法功能级别自定义 esbuild 的一组不支持的语法功能。例如，您可以使用它告诉 esbuild 不支持 BigInt，以便 esbuild 在您尝试使用 BigInt 时生成错误。通常，这是在您使用 `target` 设置时为您配置的，您通常应该使用该设置而不是此设置。如果除了此设置之外还指定了目标，则此设置将覆盖目标指定的任何内容。
+
+#### Target 
+
+这将为生成的 JavaScript 和/或 CSS 代码设置目标环境。它告诉 esbuild 将对于这些环境来说太新的 JavaScript 语法转换为可以在这些环境中工作的较旧的 JavaScript 语法。例如，Chrome 80 中引入了 `??` 运算符，因此当面向 Chrome 79 或更早版本时，esbuild 会将其转换为等效（但更详细）的条件表达式。
+
+- `chrome`
+- `deno`
+- `edge`
+- `firefox`
+- `hermes`
+- `ie`
+- `ios`
+- `node`
+- `opera`
+- `rhino`
+- `safari`
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  target: [
+    'es2020',
+    'chrome58',
+    'edge16',
+    'firefox57',
+    'node12',
+    'safari11',
+  ],
+  outfile: 'out.js',
+})
+```
+
+### Optimization
+
+####  Define 
+
+此功能提供了一种用常量表达式替换全局标识符的方法。它可以是一种在构建之间更改某些代码的行为而不更改代码本身的方法：
+
+```js
+import * as esbuild from 'esbuild'
+let js = 'hooks = DEBUG && require("hooks")'
+(await esbuild.transform(js, {
+  define: { DEBUG: 'true' },
+})).code
+'hooks = require("hooks");\n'
+(await esbuild.transform(js, {
+  define: { DEBUG: 'false' },
+})).code
+'hooks = false;\n'
+```
+
+每个 `define` 条目将一个标识符映射到包含表达式的代码字符串。字符串中的表达式必须是 JSON 对象（null、布尔值、数字、字符串、数组或对象）或单个标识符。除数组和对象之外的替换表达式都是内联替换的，这意味着它们可以参与常量折叠。数组和对象替换表达式存储在变量中，然后使用标识符进行引用，而不是内联替换，这避免了替换值的重复副本，但意味着这些值不参与常量折叠。
+
+#### Drop 
+
+这告诉 esbuild 在构建之前编辑源代码以删除某些构造。目前有两种可能被删除的东西：
+
+- debugger
+- console
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  drop: ['console','debugger'],
+})
+```
+
+#### Ignore annotations 
+
+由于 JavaScript 是一种动态语言，因此编译器有时很难识别未使用的代码，因此社区开发了某些注释来帮助告诉编译器哪些代码应被视为无副作用且可删除。目前 esbuild 支持两种形式的副作用注释：
+
+- 函数调用之前的内联 `/* @__PURE__ */` 注释告诉 esbuild 如果不使用结果值，则可以删除函数调用。有关更多信息，请参阅纯 API 选项。
+- `package.json` 中的 `sideEffects` 字段可用于告诉 esbuild 如果从该文件中导入的所有文件最终都未使用，则可以删除包中的哪些文件。这是 Webpack 的约定，许多发布到 npm 的库已经在其包定义中包含此字段。您可以在 Webpack 的该字段文档中了解有关该字段的更多信息。
+
+这就是为什么 esbuild 包含一种忽略副作用注释的方法。仅当您遇到捆绑包因意外从捆绑包中删除了必要的代码而损坏的问题时才应启用此功能：
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  ignoreAnnotations: true,
+  outfile: 'out.js',
+})
+```
+
+启用此功能意味着 esbuild 将不再尊重 `/* @__PURE__ */` 注释或 `sideEffects` 字段。然而，它仍然会对未使用的导入进行自动树摇动，因为这不依赖于开发人员的注释。理想情况下，该标志只是一个临时解决方法。您应该将这些问题报告给软件包的维护者以修复它们，因为它们表明软件包存在问题，并且它们也可能会绊倒其他人。
+
+#### Keep names 
+
+在 JavaScript 中，函数和类的 `name` 属性默认为源代码中附近的标识符。这些语法形式都将函数的 `name` 属性设置为 `"fn"` 
+
+```js
+function fn() {}
+let fn = function() {};
+fn = function() {};
+let [fn = function() {}] = [];
+let {fn = function() {}} = {};
+[fn = function() {}] = [];
+({fn = function() {}} = {});
+```
+
+但是，缩小会重命名符号以减少代码大小，而捆绑有时需要重命名符号以避免冲突。对于许多这样的情况，这会更改 `name` 属性的值。这通常没问题，因为 `name` 属性通常仅用于调试。但是，某些框架依赖 `name` 属性来进行注册和绑定。如果是这种情况，您可以启用此选项以保留原始 `name` 值，即使在缩小的代码中也是如此：
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  minify: true,
+  keepNames: true,
+  outfile: 'out.js',
+}
+```
+
+#### Minify 
+
+启用后，生成的代码将被缩小而不是漂亮的打印。缩小的代码通常相当于非缩小的代码，但更小，这意味着它下载速度更快，但更难调试。通常，您会在生产中缩小代码，但不会在开发中缩小代码。
+
+```js
+import * as esbuild from 'esbuild'
+var js = 'fn = obj => { return obj.x }'
+(await esbuild.transform(js, {
+  minify: true,
+})).code
+'fn=n=>n.x;\n'
+```
+
+此选项组合执行三个独立的操作：删除空格、重写语法以使其更紧凑，并将局部变量重命名为更短。通常您想要执行所有这些操作，但如果需要，也可以单独启用这些选项：
+
+```js
+import * as esbuild from 'esbuild'
+var js = 'fn = obj => { return obj.x }'
+(await esbuild.transform(js, {
+  minifyWhitespace: true,
+})).code
+'fn=obj=>{return obj.x};\n'
+(await esbuild.transform(js, {
+  minifyIdentifiers: true,
+})).code
+'fn = (n) => {\n  return n.x;\n};\n'
+(await esbuild.transform(js, {
+  minifySyntax: true,
+})).code
+'fn = (obj) => obj.x;\n'
+```
+
+#### Pure 
+
+各种 JavaScript 工具都使用一种约定，其中在新表达式或调用表达式之前包含 `/* @__PURE__ */` 或 `/* #__PURE__ */` 的特殊注释意味着如果结果值未使用，则可以删除该表达式。它看起来像这样：
+
+```js
+let button = /* @__PURE__ */ React.createElement(Button, null);
+```
+
+诸如 esbuild 之类的捆绑器在 Tree Shaking（也称为死代码删除）期间使用此信息来执行跨模块边界的未使用导入的细粒度删除，在这种情况下，捆绑器无法自行证明删除是安全的，因为JavaScript 代码的动态特性。
+
+一些表达式（例如 JSX 和某些内置全局变量）在 esbuild 中自动注释为 `/* @__PURE__ */` 。您还可以配置其他全局变量来标记为 `/* @__PURE__ */` 。例如，您可以将全局 `document.createElement` 函数标记为这样，以便在压缩包时只要不使用结果，就会自动将其从包中删除。
+
+值得一提的是，注释的效果仅扩展到调用本身，而不是参数。即使启用缩小功能，具有副作用的参数仍然保留：
+
+```js
+import * as esbuild from 'esbuild'
+let js = 'document.createElement(elemName())'
+(await esbuild.transform(js, {
+  pure: ['document.createElement'],
+})).code
+'/* @__PURE__ */ document.createElement(elemName());\n'
+(await esbuild.transform(js, {
+  pure: ['document.createElement'],
+  minify: true,
+})).code
+'elemName();\n'
+```
+
+#### Tree shaking 
+
+Tree Shaking 是 JavaScript 社区用于消除死代码的术语，这是一种常见的编译器优化，可以自动删除无法访问的代码。在 esbuild 中，该术语特指声明级死代码删除。
+
+```js
+// input.js
+function one() {
+  console.log('one')
+}
+function two() {
+  console.log('two')
+}
+one()
+```
+
+这样 esbuild 将只捆绑您实际使用的包的部分，这有时可以节省大量的大小。请注意，esbuild 的 tree shake 实现依赖于 ECMAScript 模块 `import` 和 `export` 语句的使用。它不适用于 CommonJS 模块。 npm 上的许多包都包含这两种格式，并且 esbuild 会尝试选择默认与 tree shake 配合使用的格式。您可以根据包使用主要字段和/或条件选项来自定义 esbuild 选择的格式。
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  treeShaking: false,
+  outfile: 'out.js',
+})
+```
+
+### Source maps
+
+#### Source root
+
+此功能仅在启用源映射时才相关。它允许您设置源映射中 `sourceRoot` 字段的值，该值指定源映射中所有其他路径相对于的路径。如果此字段不存在，则源映射中的所有路径都将被解释为相对于包含源映射的目录。
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  sourcemap: true,
+  sourceRoot: 'https://raw.githubusercontent.com/some/repo/v1.2.3/',
+})
+```
+
+#### Sourcefile 
+
+当使用没有文件名的输入时，此选项设置文件名。当使用转换 API 以及使用带有 stdin 的构建 API 时，会发生这种情况。配置的文件名反映在错误消息和源映射中。如果未配置，文件名默认为 `<stdin>` 。可以这样配置：
+
+```js
+import * as esbuild from 'esbuild'
+import fs from 'node:fs'
+
+let js = fs.readFileSync('app.js', 'utf8')
+let result = await esbuild.transform(js, {
+  sourcefile: 'example.js',
+  sourcemap: 'inline',
+})
+
+console.log(result.code)
+```
+
+#### Sourcemap 
+
+源映射可以让您更轻松地调试代码。它们对从生成的输出文件中的行/列偏移量转换回相应原始输入文件中的行/列偏移量所需的信息进行编码。如果您生成的代码与原始代码有很大不同（例如您的原始代码是 TypeScript 或您启用了缩小），这非常有用。如果您更喜欢在浏览器的开发人员工具中查看单个文件而不是一个大的捆绑文件，这也很有用。
+
+- linked
+- external
+- inline
+- both
+
+构建 API 支持上面列出的所有四种源映射模式，但转换 API 不支持 `linked` 模式。这是因为从转换 API 返回的输出没有关联的文件名。如果您希望转换 API 的输出具有源映射注释，您可以自己添加一个注释。此外，CLI 形式的转换 API 仅支持 `inline` 模式，因为输出写入到 stdout，因此无法生成多个输出文件。
+
+#### Sources content 
+
+源映射是使用源映射格式的版本 3 生成的，这是迄今为止支持最广泛的变体。每个源映射看起来像这样：
+
+```json
+{
+  "version": 3,
+  "sources": ["bar.js", "foo.js"],
+  "sourcesContent": ["bar()", "foo()\nimport './bar'"],
+  "mappings": ";AAAA;;;ACAA;",
+  "names": []
+}
+```
+
+但是，在某些情况下不需要它。例如，如果您只是在生产中使用源映射来生成包含原始文件名的堆栈跟踪，则不需要原始源代码，因为不涉及调试器。在这种情况下，可能需要省略 `sourcesContent` 字段以使源映射更小：
+
+```js
+import * as esbuild from 'esbuild'
+
+await esbuild.build({
+  bundle: true,
+  entryPoints: ['app.js'],
+  sourcemap: true,
+  sourcesContent: false,
+  outfile: 'out.js',
+})
+```
+
+### Build metadata 
+
+#### Metafile 
+
+此选项告诉 esbuild 以 JSON 格式生成一些有关构建的元数据。以下示例将元数据放入名为 `meta.json` 的文件中：
+
+```js
+import * as esbuild from 'esbuild'
+import fs from 'node:fs'
+
+let result = await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  metafile: true,
+  outfile: 'out.js',
+})
+
+fs.writeFileSync('meta.json', JSON.stringify(result.metafile))
+```
+
+然后可以通过其他工具分析该数据。对于交互式可视化，您可以使用 esbuild 自己的包大小分析器。为了快速进行文本分析，您可以使用 esbuild 的内置分析功能。或者您可以使用此信息编写自己的分析。
+
+元数据 JSON 格式如下所示（使用 TypeScript 接口描述）：
+
+```json
+interface Metafile {
+  inputs: {
+    [path: string]: {
+      bytes: number
+      imports: {
+        path: string
+        kind: string
+        external?: boolean
+        original?: string
+        with?: Record<string, string>
+      }[]
+      format?: string
+      with?: Record<string, string>
+    }
+  }
+  outputs: {
+    [path: string]: {
+      bytes: number
+      inputs: {
+        [path: string]: {
+          bytesInOutput: number
+        }
+      }
+      imports: {
+        path: string
+        kind: string
+        external?: boolean
+      }[]
+      exports: string[]
+      entryPoint?: string
+      cssBundle?: string
+    }
+  }
+}
+```
+
