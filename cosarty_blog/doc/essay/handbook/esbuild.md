@@ -1,6 +1,5 @@
 ---
 headerDepth: 4
-
 ---
 
 # esbuild 指南
@@ -1347,5 +1346,580 @@ interface Metafile {
     }
   }
 }
+```
+
+## 插件
+
+插件 API 允许您将代码注入构建过程的各个部分。与 API 的其余部分不同，它不能从命令行使用。您必须编写 JavaScript 或 Go 代码才能使用插件 API。插件也只能与构建 API 一起使用，而不能与转换 API 一起使用。
+
+如果您正在寻找现有的 esbuild 插件，您应该查看现有 esbuild 插件的[列表](https://github.com/esbuild/community-plugins)。此列表中的插件是作者特意添加的，旨在供 esbuild 社区中的其他人使用。
+
+### 使用插件
+
+esbuild 插件是一个具有 `name` 和 `setup` 函数的对象。它们以数组形式传递给构建 API 调用。 `setup` 函数针对每个构建 API 调用运行一次。
+
+这是一个简单的插件示例，允许您在构建时导入当前环境变量：
+
+```js
+import * as esbuild from 'esbuild'
+
+let envPlugin = {
+  name: 'env',
+  setup(build) {
+    // Intercept import paths called "env" so esbuild doesn't attempt
+    // to map them to a file system location. Tag them with the "env-ns"
+    // namespace to reserve them for this plugin.
+    build.onResolve({ filter: /^env$/ }, args => ({
+      path: args.path,
+      namespace: 'env-ns',
+    }))
+
+    // Load paths tagged with the "env-ns" namespace and behave as if
+    // they point to a JSON file containing the environment variables.
+    build.onLoad({ filter: /.*/, namespace: 'env-ns' }, () => ({
+      contents: JSON.stringify(process.env),
+      loader: 'json',
+    }))
+  },
+}
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  outfile: 'out.js',
+  plugins: [envPlugin],
+})
+```
+
+你可以像这样使用它：
+
+```js
+import { PATH } from 'env'
+console.log(`PATH is ${PATH}`)
+```
+
+### 概念
+
+#### Namespaces 
+
+每个模块都有一个关联的命名空间。默认情况下，esbuild 在 `file` 命名空间中运行，该命名空间对应于文件系统上的文件。但 esbuild 还可以处理在文件系统上没有相应位置的“虚拟”模块。发生这种情况的一种情况是使用 stdin 提供模块时。
+
+插件可用于创建虚拟模块。虚拟模块通常使用 `file` 以外的命名空间来与文件系统模块区分开来。通常命名空间特定于创建它们的插件。例如，下面的示例 HTTP 插件使用 `http-url` 命名空间来下载文件。
+
+#### Filters 
+
+每个回调必须提供正则表达式作为过滤器。当路径与其过滤器不匹配时，esbuild 使用它来跳过调用回调，这是为了提高性能。从 esbuild 的高度并行内部调用单线程 JavaScript 代码的成本很高，为了获得最大速度，应尽可能避免。
+
+只要有可能，您应该尝试使用过滤器正则表达式而不是使用 JavaScript 代码进行过滤。这更快，因为正则表达式是在 esbuild 内部计算的，根本不需要调用 JavaScript。例如，下面的示例 HTTP 插件使用 `^https?://` 过滤器来确保运行插件的性能开销仅发生在以 `http://` 或 `https://`
+
+允许的正则表达式语法是Go的正则表达式引擎支持的语法。这与 JavaScript 略有不同。具体来说，不支持前瞻、后视和反向引用。 Go 的正则表达式引擎旨在避免可能影响 JavaScript 正则表达式的灾难性指数时间最坏情况性能问题。
+
+请注意，命名空间也可用于过滤。回调必须提供过滤器正则表达式，但也可以选择提供命名空间以进一步限制匹配的路径。这对于“记住”虚拟模块的来源非常有用。请记住，命名空间使用精确的字符串相等性测试而不是正则表达式进行匹配，因此与模块路径不同，它们并不用于存储任意数据。
+
+### On-resolve callbacks
+
+使用 `onResolve` 添加的回调将在 esbuild 构建的每个模块中的每个导入路径上运行。该回调可以自定义 esbuild 如何进行路径解析。例如，它可以拦截导入路径并将其重定向到其他地方。它还可以将路径标记为外部。这是一个例子：
+
+```js
+import * as esbuild from 'esbuild'
+import path from 'node:path'
+
+let exampleOnResolvePlugin = {
+  name: 'example',
+  setup(build) {
+    // Redirect all paths starting with "images/" to "./public/images/"
+    build.onResolve({ filter: /^images\// }, args => {
+      return { path: path.join(args.resolveDir, 'public', args.path) }
+    })
+
+    // Mark all paths starting with "http://" or "https://" as external
+    build.onResolve({ filter: /^https?:\/\// }, args => {
+      return { path: args.path, external: true }
+    })
+  },
+}
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  outfile: 'out.js',
+  plugins: [exampleOnResolvePlugin],
+  loader: { '.png': 'binary' },
+})
+```
+
+回调可以返回而不提供将路径解析的责任传递给下一个回调的路径。对于给定的导入路径，来自所有插件的所有 `onResolve` 回调将按照它们注册的顺序运行，直到有人负责路径解析。如果没有回调返回路径，esbuild 将运行其默认路径解析逻辑。
+
+请记住，许多回调可能同时运行。在 JavaScript 中，如果您的回调执行可以在另一个线程上运行的昂贵工作，例如 `fs.existsSync()` ，则您应该使回调 `async` 并使用 `await` （在本例中）与 `fs.promises.exists()` ）以允许其他代码同时运行。在 Go 中，每个回调可以在单独的 goroutine 上运行。如果您的插件使用任何共享数据结构，请确保您有适当的同步
+
+#### options 
+
+```typescript
+interface OnResolveOptions {
+  filter: RegExp;
+  namespace?: string;
+}
+```
+
+#### arguments 
+
+当 esbuild 调用 `onResolve` 注册的回调时，它将向这些参数提供有关导入路径的信息：
+
+```typescript
+interface OnResolveArgs {
+  path: string;
+  importer: string;
+  namespace: string;
+  resolveDir: string;
+  kind: ResolveKind;
+  pluginData: any;
+  with: Record<string, string>;
+}
+
+type ResolveKind =
+  | 'entry-point'
+  | 'import-statement'
+  | 'require-call'
+  | 'dynamic-import'
+  | 'require-resolve'
+  | 'import-rule'
+  | 'composes-from'
+  | 'url-token'
+```
+
+- path
+  - 这是底层模块源代码中未逐字解析的路径。它可以采取任何形式。虽然 esbuild 的默认行为是将导入路径解释为相对路径或包名称，但插件可用于引入新的路径形式。例如，下面的示例 HTTP 插件为以 `http://` 开头的路径赋予了特殊含义。
+- importer
+  - 这是包含要解析的导入的模块的路径。请注意，仅当命名空间为 `file` 时，才保证此路径是文件系统路径。如果您想解析相对于包含导入器模块的目录的路径，您应该使用 `resolveDir` 来代替，因为这也适用于虚拟模块。
+- namespace
+  - 这是包含要解析的导入的模块的命名空间，由加载此文件的加载回调设置。对于使用 esbuild 的默认行为加载的模块，这默认为 `file` 命名空间。您可以在此处阅读有关命名空间的更多信息。
+- resolveDir
+  - 这是将导入路径解析为文件系统上的真实路径时要使用的文件系统目录。对于 `file` 命名空间中的模块，该值默认为模块路径的目录部分。对于虚拟模块，此值默认为空，但加载回调也可以选择为虚拟模块提供解析目录。如果发生这种情况，将提供它来解析该文件中未解析路径的回调。
+- kind
+  - 这说明了如何导入要解析的路径。例如， `'entry-point'` 表示该路径作为入口点路径提供给 API， `'import-statement'` 表示该路径来自 JavaScript `import` 或 `export` 表示路径来自 CSS `@import` 规则。
+- pluginData
+  - 该属性是从以前的插件传递的，由加载该文件的加载回调设置。
+- with
+  - 它包含用于导入此模块的导入语句中存在的导入属性的映射。例如，使用 `with { type: 'json' }` 导入的模块将为插件提供 `with` 值 `{ type: 'json' }` 。您可以使用它来根据导入属性解析到不同的路径。
+
+#### results
+
+[官网](https://esbuild.github.io/plugins/#on-resolve-results)
+
+```typescript
+interface OnResolveResult {
+  errors?: Message[];
+  external?: boolean;
+  namespace?: string;
+  path?: string;
+  pluginData?: any;
+  pluginName?: string;
+  sideEffects?: boolean;
+  suffix?: string;
+  warnings?: Message[];
+  watchDirs?: string[];
+  watchFiles?: string[];
+}
+
+interface Message {
+  text: string;
+  location: Location | null;
+  detail: any; // The original error from a JavaScript plugin, if applicable
+}
+
+interface Location {
+  file: string;
+  namespace: string;
+  line: number; // 1-based
+  column: number; // 0-based, in bytes
+  length: number; // in bytes
+  lineText: string;
+}
+```
+
+### On-load callbacks 
+
+使用 `onLoad` 添加的回调将为每个尚未标记为外部的唯一路径/命名空间对运行。它的工作是返回模块的内容并告诉 esbuild 如何解释它。下面是一个示例插件，它将 `.txt` 文件转换为单词数组：
+
+```js
+import * as esbuild from 'esbuild'
+import fs from 'node:fs'
+
+let exampleOnLoadPlugin = {
+  name: 'example',
+  setup(build) {
+    // Load ".txt" files and return an array of words
+    build.onLoad({ filter: /\.txt$/ }, async (args) => {
+      let text = await fs.promises.readFile(args.path, 'utf8')
+      return {
+        contents: JSON.stringify(text.split(/\s+/)),
+        loader: 'json',
+      }
+    })
+  },
+}
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  outfile: 'out.js',
+  plugins: [exampleOnLoadPlugin],
+})
+```
+
+回调可以返回而不提供模块的内容。在这种情况下，加载模块的责任将传递给下一个注册的回调。对于给定的模块，来自所有插件的所有 `onLoad` 回调将按照它们注册的顺序运行，直到有人负责加载该模块。如果没有回调返回模块的内容，esbuild 将运行其默认的模块加载逻辑。
+
+请记住，许多回调可能同时运行。在 JavaScript 中，如果您的回调执行可以在另一个线程上运行的昂贵工作，例如 `fs.readFileSync()` ，则您应该使回调 `async` 并使用 `await` （在本例中）与 `fs.promises.readFile()` ）以允许其他代码同时运行。在 Go 中，每个回调可以在单独的 goroutine 上运行。如果您的插件使用任何共享数据结构，请确保您有适当的同步。
+
+#### options 
+
+```typescript
+interface OnLoadOptions {
+  filter: RegExp;
+  namespace?: string;
+}
+```
+
+同上
+
+#### arguments 
+
+[官网](https://esbuild.github.io/plugins/#on-load-arguments)
+
+```typescript
+interface OnLoadArgs {
+  path: string;
+  namespace: string;
+  suffix: string;
+  pluginData: any;
+  with: Record<string, string>;
+}
+```
+
+#### results 
+
+[官网](https://esbuild.github.io/plugins/#on-load-results)
+
+这是可以通过使用 `onLoad` 添加的回调返回的对象，以提供模块的内容。如果您想从回调中返回而不提供任何内容，只需返回默认值（即 JavaScript 中的 `undefined` 和 Go 中的 `OnLoadResult{}` ）。以下是可以返回的可选属性：
+
+```typescript
+interface OnLoadResult {
+  contents?: string | Uint8Array;
+  errors?: Message[];
+  loader?: Loader;
+  pluginData?: any;
+  pluginName?: string;
+  resolveDir?: string;
+  warnings?: Message[];
+  watchDirs?: string[];
+  watchFiles?: string[];
+}
+
+interface Message {
+  text: string;
+  location: Location | null;
+  detail: any; // The original error from a JavaScript plugin, if applicable
+}
+
+interface Location {
+  file: string;
+  namespace: string;
+  line: number; // 1-based
+  column: number; // 0-based, in bytes
+  length: number; // in bytes
+  lineText: string;
+}
+```
+
+### On-start callbacks 
+
+注册一个启动回调，以便在新构建开始时收到通知。这会触发所有构建，而不仅仅是初始构建，因此它对于重建、监视模式和服务模式特别有用。以下是添加启动回调的方法
+
+```js
+let examplePlugin = {
+  name: 'example',
+  setup(build) {
+    build.onStart(() => {
+      console.log('build started')
+    })
+  },
+}
+```
+
+您不应使用启动回调进行初始化，因为它可以运行多次。如果您想初始化某些内容，只需将插件初始化代码直接放在 `setup` 函数中即可。
+
+启动回调可以是 `async` 并且可以返回一个承诺。所有插件的所有启动回调都会同时运行，然后构建会等待所有启动回调完成，然后再继续。启动回调可以选择返回错误和/或警告以包含在构建中。
+
+请注意，启动回调无法改变构建选项。初始构建选项只能在 `setup` 函数内修改，并在 `setup` 返回后使用。第一个之后的所有构建都重用相同的初始选项，因此初始选项永远不会被重新使用，并且在启动回调中完成的对 `build.initialOptions` 的修改将被忽略。
+
+### On-end callbacks 
+
+注册一个结束回调，以便在新构建结束时收到通知。这会触发所有构建，而不仅仅是初始构建，因此它对于重建、监视模式和服务模式特别有用。添加端回调的方法如下：
+
+```js
+let examplePlugin = {
+  name: 'example',
+  setup(build) {
+    build.onEnd(result => {
+      console.log(`build ended with ${result.errors.length} errors`)
+    })
+  },
+}
+```
+
+### On-dispose callbacks 
+
+注册一个 on-dispose 回调以在不再使用插件时执行清理。无论构建是否失败，都会在每次 `build()` 调用之后调用，以及在给定构建上下文上的第一个 `dispose()` 调用之后调用。以下是添加 on-dispose 回调的方法：
+
+```js
+let examplePlugin = {
+  name: 'example',
+  setup(build) {
+    build.onDispose(() => {
+      console.log('This plugin is no longer used')
+    })
+  },
+}
+```
+
+### Accessing build options
+
+插件可以从 `setup` 方法中访问初始构建选项。这使您可以在构建开始之前检查构建的配置方式以及修改构建选项。这是一个例子：
+
+```js
+let examplePlugin = {
+  name: 'auto-node-env',
+  setup(build) {
+    const options = build.initialOptions
+    options.define = options.define || {}
+    options.define['process.env.NODE_ENV'] =
+      options.minify ? '"production"' : '"development"'
+  },
+}
+```
+
+请注意，构建开始后对构建选项的修改不会影响构建。特别是，如果插件在第一次构建开始后改变构建选项对象，则重建、监视模式和服务模式不会更新其构建选项。
+
+### Resolving paths
+
+当插件从 on-resolve 回调返回结果时，该结果完全替换 esbuild 的内置路径解析。这使插件可以完全控制路径解析的工作方式，但这意味着如果插件想要具有类似的行为，则可能必须重新实现 esbuild 已经内置的一些行为。例如，插件可能想要在用户的 `node_modules` 目录中搜索包，这是 esbuild 已经实现的。
+
+插件可以选择手动运行 esbuild 的路径解析并检查结果，而不是重新实现 esbuild 的内置行为。这使您可以调整 esbuild 路径分辨率的输入和/或输出。这是一个例子：
+
+```js
+import * as esbuild from 'esbuild'
+
+let examplePlugin = {
+  name: 'example',
+  setup(build) {
+    build.onResolve({ filter: /^example$/ }, async () => {
+        // 或者 ./example/main.js
+        const result = await build.resolve('./example', {
+        kind: 'import-statement',
+        resolveDir: './packages',
+      })
+      if (result.errors.length > 0) {
+        return { errors: result.errors }
+      }
+      return { path: result.path, external: true }
+    })
+  },
+}
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  outfile: 'out.js',
+  plugins: [examplePlugin],
+})
+```
+
+该插件拦截路径 `example` 的导入，告诉 esbuild 解析目录 `./packages`中的导入` ./example` ，强制 esbuild 返回的任何路径被视为外部路径，并且将 `example` 的导入映射到该外部路径。
+
+#### options 
+
+`resolve` 函数将要解析的路径作为第一个参数，将具有可选属性的对象作为第二个参数。此选项对象与传递给 `onResolve` 的参数非常相似。以下是可用的选项：
+
+```typescript
+interface ResolveOptions {
+  kind: ResolveKind;
+  importer?: string;
+  namespace?: string;
+  resolveDir?: string;
+  pluginData?: any;
+  with?: Record<string, string>;
+}
+
+type ResolveKind =
+  | 'entry-point'
+  | 'import-statement'
+  | 'require-call'
+  | 'dynamic-import'
+  | 'require-resolve'
+  | 'import-rule'
+  | 'url-token'
+```
+
+#### results
+
+`resolve` 函数返回一个对象，该对象与插件可以从 `onResolve` 回调返回的对象非常相似。它具有以下属性：
+
+```js
+xport interface ResolveResult {
+  errors: Message[];
+  external: boolean;
+  namespace: string;
+  path: string;
+  pluginData: any;
+  sideEffects: boolean;
+  suffix: string;
+  warnings: Message[];
+}
+
+interface Message {
+  text: string;
+  location: Location | null;
+  detail: any; // The original error from a JavaScript plugin, if applicable
+}
+
+interface Location {
+  file: string;
+  namespace: string;
+  line: number; // 1-based
+  column: number; // 0-based, in bytes
+  length: number; // in bytes
+  lineText: string;
+}
+```
+
+### Example plugins 
+
+#### HTTP plugin
+
+```js
+import { zip } from 'https://unpkg.com/lodash-es@4.17.15/lodash.js'
+console.log(zip([1, 2], ['a', 'b']))
+```
+
+插件
+
+```js
+import * as esbuild from 'esbuild'
+import https from 'node:https'
+import http from 'node:http'
+
+let httpPlugin = {
+  name: 'http',
+  setup(build) {
+
+    build.onResolve({ filter: /^https?:\/\// }, args => ({
+      path: args.path,
+      namespace: 'http-url',
+    }))
+
+
+    build.onResolve({ filter: /.*/, namespace: 'http-url' }, args => ({
+      path: new URL(args.path, args.importer).toString(),
+      namespace: 'http-url',
+    }))
+
+    build.onLoad({ filter: /.*/, namespace: 'http-url' }, async (args) => {
+      let contents = await new Promise((resolve, reject) => {
+        function fetch(url) {
+          console.log(`Downloading: ${url}`)
+          let lib = url.startsWith('https') ? https : http
+          let req = lib.get(url, res => {
+            if ([301, 302, 307].includes(res.statusCode)) {
+              fetch(new URL(res.headers.location, url).toString())
+              req.abort()
+            } else if (res.statusCode === 200) {
+              let chunks = []
+              res.on('data', chunk => chunks.push(chunk))
+              res.on('end', () => resolve(Buffer.concat(chunks)))
+            } else {
+              reject(new Error(`GET ${url} failed: status ${res.statusCode}`))
+            }
+          }).on('error', reject)
+        }
+        fetch(args.path)
+      })
+      return { contents }
+    })
+  },
+}
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  outfile: 'out.js',
+  plugins: [httpPlugin],
+})
+```
+
+#### WebAssembly plugin
+
+该插件允许您将 `.wasm` 文件导入 JavaScript 代码。它本身不会生成 WebAssembly 文件；这可以通过其他工具来完成，也可以通过修改此示例插件来满足您的需求。它支持以下工作流程：
+
+```js
+import load from './example.wasm'
+load(imports).then(exports => { ... })
+```
+
+当您导入 `.wasm` 文件时，此插件会在 `wasm-stub` 命名空间中生成一个虚拟 JavaScript 模块，并使用单个函数加载作为默认导出导出的 WebAssembly 模块。该存根模块看起来像这样：
+
+```js
+import wasm from '/path/to/example.wasm'
+export default (imports) =>
+  WebAssembly.instantiate(wasm, imports).then(
+    result => result.instance.exports)
+```
+
+然后，该存根模块使用 esbuild 的内置二进制加载器将 WebAssembly 文件本身导入为 `wasm-binary` 命名空间中的另一个模块。这意味着导入 `.wasm` 文件实际上会生成两个虚拟模块。这是该插件的代码：
+
+```js
+import * as esbuild from 'esbuild'
+import path from 'node:path'
+import fs from 'node:fs'
+
+let wasmPlugin = {
+  name: 'wasm',
+  setup(build) {
+    build.onResolve({ filter: /\.wasm$/ }, args => {
+      if (args.namespace === 'wasm-stub') {
+        return {
+          path: args.path,
+          namespace: 'wasm-binary',
+        }
+      }
+
+      if (args.resolveDir === '') {
+        return // Ignore unresolvable paths
+      }
+      return {
+        path: path.isAbsolute(args.path) ? args.path : path.join(args.resolveDir, args.path),
+        namespace: 'wasm-stub',
+      }
+    })
+
+    build.onLoad({ filter: /.*/, namespace: 'wasm-stub' }, async (args) => ({
+      contents: `import wasm from ${JSON.stringify(args.path)}
+        export default (imports) =>
+          WebAssembly.instantiate(wasm, imports).then(
+            result => result.instance.exports)`,
+    }))
+
+    build.onLoad({ filter: /.*/, namespace: 'wasm-binary' }, async (args) => ({
+      contents: await fs.promises.readFile(args.path),
+      loader: 'binary',
+    }))
+  },
+}
+
+await esbuild.build({
+  entryPoints: ['app.js'],
+  bundle: true,
+  outfile: 'out.js',
+  plugins: [wasmPlugin],
+})
 ```
 
