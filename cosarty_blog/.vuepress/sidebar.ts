@@ -55,7 +55,7 @@ export default sidebar({
     '3.responsive',
   ],
   '/doc/essay/handbook/nextjs': ['1.setup'],
-  '/doc/essay/handbook/electron': ['1.setup'],
+  '/doc/essay/handbook/electron': ['1.setup','2.screenRecording'],
   '/doc/interview': [
     {
       text: 'css',
