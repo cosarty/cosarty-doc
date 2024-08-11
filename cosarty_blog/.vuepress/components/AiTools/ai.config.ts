@@ -8,7 +8,7 @@ export default {
         icon: 'https://metaso.cn/apple-touch-icon.png',
       },
       {
-        name: '多种草Ai',
+        name: '多种草AI',
         link: 'https://duozhongcao.com/',
         icon: 'https://duozhongcao.com/favicon.ico',
       },
