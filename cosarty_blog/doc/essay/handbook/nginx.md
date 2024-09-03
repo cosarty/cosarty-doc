@@ -106,6 +106,12 @@ nginx安装依赖GCC、openssl-devel、pcre-devel和zlib-devel软件库，他们
 yum install gcc zlib-devel  pcre pcre-devel openssl openssl-devel -y 
 ```
 
+ubuntu 安装
+
+```bash
+ sudo apt install gcc zlib1g-dev libpcre3 libpcre3-dev openssl libssl-dev
+```
+
 1
 
 小知识：
@@ -167,6 +173,9 @@ mkdir /data/nginx -p
 useradd nginx -M -s /sbin/nologin 
 make && make install 
 ```
+
+没有配置--prefix的话
+> 默认是在/usr/local/nginx
 
 ```nginx
 --with-http_ssl_module  安装该模块，该模块是nginx支持ssl协议，提供https服务。
