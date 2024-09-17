@@ -58,7 +58,11 @@ export default navbar([
         text: 'electron',
       },
       'swc',
-      'esbuild'
+      'esbuild',
+      {
+        link: 'prisma/1.quickStart.md',
+        text: 'prisma',
+      },
     ],
   },
   {

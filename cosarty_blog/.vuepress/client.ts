@@ -1,5 +1,5 @@
 // .vuepress/client.ts
-import { defineClientConfig } from '@vuepress/client'
+import { defineClientConfig } from 'vuepress/client'
 import components from './components'
 
 export default defineClientConfig({

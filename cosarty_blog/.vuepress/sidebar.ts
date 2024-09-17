@@ -47,12 +47,19 @@ export default sidebar({
     },
     "swc",
     "esbuild",
+    {
+      link: 'prisma/1.quickStart',
+      text: 'prisma',
+    },
   ],
   // 重新开一行是为了重新渲染侧边栏
   '/doc/essay/handbook/tailwindcss': [
     '1.setup',
     '2.pseudoClass',
     '3.responsive',
+  ],
+  '/doc/essay/handbook/prisma': [
+    '1.quickStart',
   ],
   '/doc/essay/handbook/nextjs': ['1.setup'],
   '/doc/essay/handbook/electron': ['1.setup','2.screenRecording','3.inputDevices'],

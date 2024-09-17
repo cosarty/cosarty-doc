@@ -1,5 +1,4 @@
 ---
-sidebar: heading
 title: npm常用包
 ---
 ## picocolors
