@@ -90,4 +90,4 @@ jobs:
           SOURCE: "cosarty_blog/.vuepress/dist/"
           REMOTE_HOST: ${{ secrets.ALIYUN_SERVER_HOST }}
           REMOTE_USER: root
-          TARGET: /var/www/html/
+          TARGET: /home/admin/deploy/blog/

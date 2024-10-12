@@ -58,9 +58,7 @@ export default sidebar({
     '2.pseudoClass',
     '3.responsive',
   ],
-  '/doc/essay/handbook/prisma': [
-    '1.quickStart',
-  ],
+  '/doc/essay/handbook/prisma':"structure",
   '/doc/essay/handbook/nextjs': ['1.setup'],
   '/doc/essay/handbook/electron': ['1.setup','2.screenRecording','3.inputDevices'],
   '/doc/interview': [
