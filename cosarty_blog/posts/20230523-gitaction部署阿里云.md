@@ -88,7 +88,7 @@ ssh-keygen -m PEM -t rsa -b 4096 -C "你的git邮箱地址"
 
 不断点空格完成密钥生成，会生成私钥`id_rsa`，公钥`id_rsa.pub`
 
-复制公钥到以下文件
+复制~~公钥~~私钥，到以下文件
 
 ```bash
 cat ~/.ssh/id_rsa.pub >> ~/.ssh/authorized_keys
