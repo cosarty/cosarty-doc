@@ -13,6 +13,10 @@ projects:
     name: 试题君
     desc: 一个答题论坛
     link: https://github.com/cosarty/yourdocument
+  - icon: project
+    name: 工具集
+    desc: 自用工具集
+    link: https://libs.cosarty.cn/
 
 #   - icon: link
 #     name: 链接名称
