@@ -45,16 +45,6 @@ require.main === module
 
 - [具体细节可以看这一个视频](https://www.bilibili.com/video/av80554200/?zw&vd_source=c191d8a5710b10bf82cce87c957298ca)
 
-## 判断移动端设备
-
-```js
-const ua = navigator.userAgent.toLowerCase()
-const isMobile =
-  /phone|pad|pod|iphone|ipod|ios|ipad|android|mobile|blackberry|iemobile|mqqbrowser|juc|fennec|wosbrowser|browserng|webos|symbian|windows phone/.test(
-    ua
-  )
-```
-
 ## 正则表达式 lastIndex 的 技巧
 
 ::: tip
