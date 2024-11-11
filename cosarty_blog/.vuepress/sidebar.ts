@@ -6,7 +6,7 @@
  * @LastEditors: Andy
  * @LastEditTime: 2023-10-08 21:41:37
  */
-import { sidebar } from 'vuepress-theme-hope'
+import { sidebar } from 'vuepress-theme-hope';
 
 export default sidebar({
   '/doc/framework/vue': 'structure',
@@ -45,8 +45,8 @@ export default sidebar({
       link: 'nextjs/1.setup',
       text: 'nextjs',
     },
-    "swc",
-    "esbuild",
+    'swc',
+    'esbuild',
     {
       link: 'prisma/1.quickStart',
       text: 'prisma',
@@ -58,9 +58,17 @@ export default sidebar({
     '2.pseudoClass',
     '3.responsive',
   ],
-  '/doc/essay/handbook/prisma':"structure",
+  '/doc/essay/handbook/prisma': [
+    '1.quickStart',
+    '2.prismaSchema',
+    '3.prismaClient',
+  ],
   '/doc/essay/handbook/nextjs': ['1.setup'],
-  '/doc/essay/handbook/electron': ['1.setup','2.screenRecording','3.inputDevices'],
+  '/doc/essay/handbook/electron': [
+    '1.setup',
+    '2.screenRecording',
+    '3.inputDevices',
+  ],
   '/doc/interview': [
     {
       text: 'css',
@@ -87,4 +95,4 @@ export default sidebar({
       link: 'ts',
     },
   ],
-})
+});
