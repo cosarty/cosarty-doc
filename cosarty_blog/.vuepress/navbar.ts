@@ -43,7 +43,10 @@ export default navbar([
       'vite-plugin',
       'npm-common-packge',
       'nginx',
-      'linux-book',
+      {
+        link: 'linux/1.other.md',
+        text: 'linux',
+      },
       'git-review',
       {
         link: 'tailwindcss/1.setup.md',

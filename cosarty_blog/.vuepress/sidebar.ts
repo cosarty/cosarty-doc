@@ -35,7 +35,10 @@ export default sidebar({
     'vite-plugin',
     'npm-common-packge',
     'nginx',
-    'linux-book',
+    {
+      link: 'linux/1.other.md',
+      text: '笔记',
+    },
     'git-review',
     {
       link: 'tailwindcss/1.setup',
@@ -58,6 +61,7 @@ export default sidebar({
     '2.pseudoClass',
     '3.responsive',
   ],
+  '/doc/essay/handbook/linux': ['1.other', '2.journalctl'],
   '/doc/essay/handbook/prisma': [
     '1.quickStart',
     '2.prismaSchema',
