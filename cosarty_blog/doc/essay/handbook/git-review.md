@@ -15,3 +15,10 @@ git pull --rebase origin master
 这条指令的意思是把远程库中的更新合并到本地库中，–rebase 的作用是取消掉本地库中刚刚的 commit，并把他们接到更新后的版本库之中。
 
 > git pull –rebase origin master意为先取消commit记录，并且把它们临时 保存为补丁(patch)(这些补丁放到”.git/rebase”目录中)，之后同步远程库到本地，最后合并补丁到本地库之中。
+
+
+## 设置远端仓库
+
+```shell
+git remote set-url origin < 远端仓库地址 >
+```

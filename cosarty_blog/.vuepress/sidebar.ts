@@ -37,7 +37,7 @@ export default sidebar({
     'nginx',
     {
       link: 'linux/1.other.md',
-      text: '笔记',
+      text: 'linux笔记',
     },
     'git-review',
     {
