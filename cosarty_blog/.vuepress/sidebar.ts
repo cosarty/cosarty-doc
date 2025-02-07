@@ -54,6 +54,7 @@ export default sidebar({
       link: 'prisma/1.quickStart',
       text: 'prisma',
     },
+    'docker',
   ],
   // 重新开一行是为了重新渲染侧边栏
   '/doc/essay/handbook/tailwindcss': [

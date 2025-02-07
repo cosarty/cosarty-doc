@@ -6,7 +6,7 @@
  * @LastEditors: Andy
  * @LastEditTime: 2023-10-08 21:42:01
  */
-import { navbar } from 'vuepress-theme-hope'
+import { navbar } from 'vuepress-theme-hope';
 
 export default navbar([
   '/',
@@ -66,6 +66,7 @@ export default navbar([
         link: 'prisma/1.quickStart.md',
         text: 'prisma',
       },
+      'docker',
     ],
   },
   {
@@ -91,4 +92,4 @@ export default navbar([
   //   icon: 'people',
   //   link: '/about/',
   // },
-])
+]);
