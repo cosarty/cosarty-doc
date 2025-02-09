@@ -17,6 +17,10 @@ projects:
     name: 工具集
     desc: 自用工具集
     link: https://libs.cosarty.cn/
+  - icon: project
+    name: 柠檬导航
+    desc: 搜集的一些网站
+    link: https://nav.cosarty.cn/
 
 #   - icon: link
 #     name: 链接名称
