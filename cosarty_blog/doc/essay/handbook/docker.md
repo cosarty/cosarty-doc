@@ -342,7 +342,7 @@ volumes:
 
 `docker restart <容器名称>` 重启容器
 
-`docker coommit ` 保存容器为新镜像
+`docker commit ` 保存容器为新镜像
 
 `docker save`导出镜像为压缩包
 
@@ -355,6 +355,10 @@ volumes:
 `docker image inspect <镜像名称>`  查看镜像信息
 
 `docker image history <镜像名称>`  查看镜像构建信息
+
+`docker 命令 --help`  查看命令帮助
+
+`docker attach <容器id>`  进入正在运行的容器终端
 
 ## docker-compose 删除操作
 
