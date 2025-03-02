@@ -154,10 +154,12 @@ type GetType<T, Path extends string> = Path extends ''
   : unknown;
   // 获取DotNotationPath的类型
 
+```
 
+## 约束数组长度
 
-
-
+```typescript
+type SafeArray<T> = Array<T> satisfies (value: T) => value.length === 3;
 ```
 
 ## 未完待续。。。。。
