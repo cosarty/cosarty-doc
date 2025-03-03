@@ -289,7 +289,7 @@ ul:not(article ul) {
 }
 ```
 
-- `:where()`对相同的类进行合并，优先级为0
+- `:where()`对相同的类进行合并，优先级为 0
 
 ```css
 :where(h1, h2, h3) > img {
@@ -304,5 +304,49 @@ ul:not(article ul) {
 div:has(p) {
   color: red;
 }
-
 ```
+
+## 平均分布技巧
+
+::: normal-demo 平均分布技巧
+
+```html
+<div class="box">
+  <span>1</span>
+  <span>2</span>
+  <span>3</span>
+  <span>4</span>
+  <span>5</span>
+  <span>6</span>
+  <span>7</span>
+  <span>8</span>
+  <span>9</span>
+  <span>10</span>
+  <span>11</span>
+  <span>12</span>
+  <span>13</span>
+</div>
+```
+
+```css
+.box {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.box span {
+  --n: 5;
+  --width: 40px;
+  --height: 30px;
+  --gap: calc((100% - var(--width) * var(--n)) / var(--n) / 2);
+  background-color: aliceblue;
+  width: var(--width);
+  height: var(--height);
+  margin: 10px var(--gap);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+```
+
+:::
