@@ -20,8 +20,6 @@ export default sidebar({
     'mobile',
     // 'js-skill',
     'css-skill',
-    'css-specific',
-
     {
       link: 'js-check-for-gaps/20230904-ResizeObserver',
       text: 'js 查缺补漏',

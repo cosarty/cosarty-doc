@@ -193,26 +193,22 @@ aspect-ratio: auto; // 保持原有的纵横比
 ::: normal-demo 文本双端对齐
 
 ```html
-
-<h3>
-  filter: drop-shadow
-</h3>
+<h3>filter: drop-shadow</h3>
 <div class="box drop-shadow">
-    <i class="cor"></i>
-    filter: drop-shadow
-  </div>
-<h3>
-  filter: box-shadow
-  
-</h3>
+  <i class="cor"></i>
+  filter: drop-shadow
+</div>
+<h3>filter: box-shadow</h3>
 <div class="box box-shadow">
-    <i class="cor"></i>
-    filte
+  <i class="cor"></i>
+  filte
+</div>
 ```
 
 ```css
 .box {
-  margin: 40px; padding: 50px;
+  margin: 40px;
+  padding: 50px;
   background-color: #fff;
   position: relative;
   font-size: 24px;
@@ -229,18 +225,16 @@ aspect-ratio: auto; // 保持原有的纵横比
 .drop-shadow {
   filter: drop-shadow(5px 5px 5px black);
 }
-.box-shadow{
-   box-shadow:5px 5px 5px black;
+.box-shadow {
+  box-shadow: 5px 5px 5px black;
 }
-
 ```
 
 :::
 
+## will-change 动效优化属性
 
-##  will-change  动效优化属性
-
-- will-change属性的值
+- will-change 属性的值
 
   - auto 表示没有明确的意图; 无论是启发式和最优化，用户代理应该应用都和正常情况相同
 
@@ -250,19 +244,65 @@ aspect-ratio: auto; // 保持原有的纵横比
 
   - 用来排除关键字 will-change, none, all, auto, scroll-position, and contents, 从之外增加一些通用的关键字
 
+> will-change： transform：<br/>
+> will-change： opacity：<br/>
+> will-change： top, left, bottom, right：
 
->will-change： transform：<br/>
->will-change： opacity：<br/>
->will-change： top, left, bottom, right：
-
-
-##  -webkit-app-region 设置属性拖动
+## -webkit-app-region 设置属性拖动
 
 ```css
-html{
-  -webkit-app-region:drag;
+html {
+  -webkit-app-region: drag;
 }
-textarea{
-  -webkit-app-region:no-drag;
+textarea {
+  -webkit-app-region: no-drag;
 }
+```
+
+## css 逻辑伪类选择器
+
+- `:not()`否定伪类
+
+```css
+/* 隐藏元素 */
+ui-toast:not([open]) {
+  display: none;
+}
+
+/* 条件匹配 */
+ul:not(article ul) {
+  color: red;
+}
+```
+
+- `:is()`对相同的类进行合并，不支持 before after
+
+```css
+:is(h1, h2, h3) > img {
+  color: red;
+}
+
+/* 保护语句 */
+
+:is(.some-class, :uno) {
+  color: red;
+}
+```
+
+- `:where()`对相同的类进行合并，优先级为0
+
+```css
+:where(h1, h2, h3) > img {
+  color: red;
+}
+```
+
+- `:has()`选择器,可以选择父选择器
+
+```css
+/* 选择包含有 p 元素的 div */
+div:has(p) {
+  color: red;
+}
+
 ```

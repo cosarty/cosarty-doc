@@ -162,4 +162,12 @@ type GetType<T, Path extends string> = Path extends ''
 type SafeArray<T> = Array<T> satisfies (value: T) => value.length === 3;
 ```
 
+## Optional 可选的
+
+```typescript
+
+
+
+type Optional<T,K extends keyof T> = Omit<T,K> & Partial<Pick<T,K>>;
+
 ## 未完待续。。。。。

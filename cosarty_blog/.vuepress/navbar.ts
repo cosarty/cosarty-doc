@@ -72,15 +72,14 @@ export default navbar([
   {
     text: '面经',
     prefix: '/interview',
-    link: '/doc/interview',
+    link: '/doc/interview/index.md',
   },
   {
     text: '杂七杂八',
     prefix: '/doc/essay/mixed/',
     children: [
       'mobile',
-      'css-skill',
-      'css-specific',
+      'css-skill', 
       {
         link: 'js-check-for-gaps/20230904-ResizeObserver',
         text: 'js 查缺补漏',
