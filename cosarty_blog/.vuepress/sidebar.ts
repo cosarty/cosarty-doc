@@ -60,7 +60,7 @@ export default sidebar({
     '2.pseudoClass',
     '3.responsive',
   ],
-  '/doc/essay/handbook/linux': ['1.other', '2.journalctl'],
+  '/doc/essay/handbook/linux': ['1.other', '2.journalctl','3.nohup','4.systemctl'],
   '/doc/essay/handbook/prisma': [
     '1.quickStart',
     '2.prismaSchema',
