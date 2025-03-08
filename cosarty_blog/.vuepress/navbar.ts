@@ -67,6 +67,10 @@ export default navbar([
         text: 'prisma',
       },
       'docker',
+      {
+        link: 'designPatterns/1.subscribe.md',
+        text: '设计模式',
+      },
     ],
   },
   {

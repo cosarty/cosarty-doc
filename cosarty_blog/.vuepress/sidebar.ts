@@ -53,6 +53,10 @@ export default sidebar({
       text: 'prisma',
     },
     'docker',
+    {
+      link: 'designPatterns/1.subscribe',
+      text: '设计模式',
+    },
   ],
   // 重新开一行是为了重新渲染侧边栏
   '/doc/essay/handbook/tailwindcss': [
@@ -60,7 +64,12 @@ export default sidebar({
     '2.pseudoClass',
     '3.responsive',
   ],
-  '/doc/essay/handbook/linux': ['1.other', '2.journalctl','3.nohup','4.systemctl'],
+  '/doc/essay/handbook/linux': [
+    '1.other',
+    '2.journalctl',
+    '3.nohup',
+    '4.systemctl',
+  ],
   '/doc/essay/handbook/prisma': [
     '1.quickStart',
     '2.prismaSchema',
@@ -72,6 +81,7 @@ export default sidebar({
     '2.screenRecording',
     '3.inputDevices',
   ],
+  '/doc/essay/handbook/designPatterns': ['1.subscribe'],
   '/doc/interview': [
     {
       text: 'css',
