@@ -53,6 +53,7 @@ export default sidebar({
       text: 'prisma',
     },
     'docker',
+    'autodl',
     {
       link: 'designPatterns/1.subscribe',
       text: '设计模式',

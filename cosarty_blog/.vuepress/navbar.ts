@@ -71,6 +71,8 @@ export default navbar([
         link: 'designPatterns/1.subscribe.md',
         text: '设计模式',
       },
+      'autodl',
+
     ],
   },
   {
