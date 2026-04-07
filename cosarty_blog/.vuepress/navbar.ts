@@ -72,6 +72,7 @@ export default navbar([
         text: '设计模式',
       },
       'autodl',
+      'biome配置',
 
     ],
   },

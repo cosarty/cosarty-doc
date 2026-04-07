@@ -54,6 +54,7 @@ export default sidebar({
     },
     'docker',
     'autodl',
+    'biome配置',
     {
       link: 'designPatterns/1.subscribe',
       text: '设计模式',
